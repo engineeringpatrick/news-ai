@@ -15,16 +15,13 @@ Schema (strict):
   "toneAndTopic": boolean,
   "personaDelta": {
     "personaA": {
+      "name": string | null,
       "style": string | null,
-      "humour": string | null,
-      "vibe": string | null
     },
     "personaB": {
+      "name": string | null,
       "style": string | null,
-      "humour": string | null,
-      "vibe": string | null
     },
-    "globalTone": string | null
   },
   "newsTopic": string | null
 }
@@ -33,7 +30,9 @@ Rules:
 - If the user only changes tone/personality (e.g. "now make the speakers more petty"), set toneOnly=true, topicOnly=false.
 - If they only change content (e.g. "show me soccer news"), set topicOnly=true.
 - If they do both (e.g. "show me italy news but be angry about it", "talk about the ukrainian war with a sleepy voice"), set toneAndTopic=true.
+- Update persona styles with as many details as possible about their tone, humour, style and behaviour based on user instructions (e.g. "be more excited", "sound more serious", "make more jokes!", "angry remarks").
 - Always try to infer a reasonable newsTopic (e.g. "soccer", "AI", "Canada tech") if they ask for content.
+- If possible, extract the name of each host from the command (e.g. "Host A should be called Alice now", "Bob speaks to Elizabeth about the war in Ukraine"), otherwise leave name as null.
 - Do NOT add extra fields.
 - If something is not changed, set it to null in personaDelta.
 `;
@@ -46,9 +45,8 @@ export async function interpretCommand(command: string, currentPersona: PersonaC
       topicOnly: true,
       toneAndTopic: false,
       personaDelta: {
-        personaA: { style: null, humour: null, vibe: null },
-        personaB: { style: null, humour: null, vibe: null },
-        globalTone: null
+        personaA: { style: null },
+        personaB: { style: null },
       },
       newsTopic: command // treat as topic
     };
@@ -86,9 +84,8 @@ export async function interpretCommand(command: string, currentPersona: PersonaC
       topicOnly: true,
       toneAndTopic: false,
       personaDelta: {
-        personaA: { style: null, humour: null, vibe: null },
-        personaB: { style: null, humour: null, vibe: null },
-        globalTone: null
+        personaA: { style: null },
+        personaB: { style: null },
       },
       newsTopic: command
     };
@@ -98,22 +95,17 @@ export async function interpretCommand(command: string, currentPersona: PersonaC
 export function applyPersonaDelta(currentPersona: PersonaConfig, delta: PersonaDelta) {
   const next = structuredClone(currentPersona);
 
-  const { personaA, personaB, globalTone } = delta;
+  const { personaA, personaB } = delta;
 
   if (personaA) {
+    next.personaA.name = currentPersona.personaA.name;
     next.personaA.style = personaA.style ?? next.personaA.style;
-    next.personaA.humour = personaA.humour ?? next.personaA.humour;
-    next.personaA.vibe = personaA.vibe ?? next.personaA.vibe;
   }
 
   if (personaB) {
+    next.personaB.name = currentPersona.personaB.name;
     next.personaB.style = personaB.style ?? next.personaB.style;
-    next.personaB.humour = personaB.humour ?? next.personaB.humour;
-    next.personaB.vibe = personaB.vibe ?? next.personaB.vibe;
   }
 
-  if (globalTone !== null && globalTone !== undefined) {
-    next.globalTone = globalTone;
-  }
   return next;
 }

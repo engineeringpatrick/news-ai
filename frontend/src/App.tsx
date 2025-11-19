@@ -11,17 +11,12 @@ import type { NewsStory, PersonaConfig, TranscriptLine } from "./types";
 const defaultPersona: PersonaConfig = {
   personaA: {
     name: "Host A",
-    style: "factual, analytical, structured",
-    humour: "minimal, dry",
-    vibe: "calm, precise"
+    style: "factual, analytical, structured, serious.",
   },
   personaB: {
     name: "Host B",
-    style: "bubbly, conversational",
-    humour: "light, friendly jokes",
-    vibe: "warm, energetic"
+    style: "bubbly, conversational, with lots of funny jokes",
   },
-  globalTone: "neutral",
 };
 
 const App: React.FC = () => {
@@ -42,18 +37,18 @@ const App: React.FC = () => {
   });
 
   const handleCommand = async (command: string) => {
-    const data = await apiUserCommand(command, personaConfig);
+    const data = await apiUserCommand(command, personaConfig, newsTopic);
     if (!data) return;
 
     console.log("api/user-command response", data);
-    const { personaConfig: updatedPersona, newsTopic, newStories } = data;
+    const { personaConfig: updatedPersona, newsTopic: newsTopicData, newStories } = data;
 
     // persona + topic
     setPersonaConfig((prev) => ({
       ...prev,
       ...updatedPersona,
     }));
-    setNewsTopic(newsTopic);
+    setNewsTopic(newsTopicData);
 
     if (newStories && newStories.length > 0) {
       setQueue((prevQueue) => {
@@ -63,9 +58,6 @@ const App: React.FC = () => {
         const [current, ...rest] = prevQueue;
         return current ? [current, ...newStories, ...rest] : [...newStories, ...rest];
       });
-    }
-    else {
-      setIsPlaying(false);
     }
   };
 

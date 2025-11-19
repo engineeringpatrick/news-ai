@@ -18,16 +18,11 @@ function defaultPersonaConfig() {
     personaA: {
       name: 'Host A',
       style: 'factual, analytical, structured',
-      humour: 'minimal, dry',
-      vibe: 'calm, precise'
     },
     personaB: {
       name: 'Host B',
       style: 'bubbly, conversational',
-      humour: 'light, friendly jokes',
-      vibe: 'warm, energetic'
     },
-    globalTone: 'neutral',
   };
 }
 
@@ -35,23 +30,22 @@ function defaultPersonaConfig() {
 app.post('/api/user-command', async (req, res) => {
   console.log("api/user-command called with", req.body);
   try {
-    const { command, personaConfig } = req.body;
+    const { command, personaConfig, newsTopic } = req.body;
     const current = personaConfig || defaultPersonaConfig();
 
     const interpreted = await interpretCommand(command, current);
     const updatedPersona = applyPersonaDelta(current, interpreted.personaDelta);
 
-    let newsTopic = current.newsTopic || 'global';
     let stories: NewsStory[] = [];
-    console.log('interpreted command', interpreted);
+    let updatedNewsTopic = newsTopic;
     if (interpreted.topicOnly || interpreted.toneAndTopic) {
-      newsTopic = interpreted.newsTopic || newsTopic;
-      stories = await fetchStories(newsTopic, 6) as NewsStory[];
+      updatedNewsTopic = interpreted.newsTopic || newsTopic;
+      stories = await fetchStories(updatedNewsTopic, 6) as NewsStory[];
     }
     
     res.json({
       personaConfig: updatedPersona,
-      newsTopic,
+      newsTopic: updatedNewsTopic,
       newStories: stories
     });
   } catch (e) {
@@ -62,23 +56,31 @@ app.post('/api/user-command', async (req, res) => {
 
 // 2) Queue refill: get an additional news story
 app.post('/api/next-items', async (req, res) => {
-  console.log("api/next-item called with", req.body);
+  console.log("api/next-items called with", req.body);
   try {
     const { newsTopic } = req.body;
     const topic = newsTopic || 'global';
 
     const stories = await fetchStories(topic, 3);
+    console.log(`fetched ${stories?.length || 0} stories for topic "${topic}"`);
     if (!stories) {
       return res.status(200).json({ story: null });
     }
 
     res.json({ snewStories: stories });
   } catch (e) {
-    console.error('/api/next-item error', e);
+    console.error('/api/next-items error', e);
     res.status(500).json({ error: 'internal_error' });
   }
 });
 
+const getFromFile = () => {
+  const fs = require('fs');
+  const path = require('path');
+  const filePath = path.join(__dirname, 'dummy_render_item_response.json');
+  const data = fs.readFileSync(filePath, 'utf-8');
+  return JSON.parse(data);
+}
 // 3) Render-time dialogue + TTS for a given story
 app.post('/api/render-item', async (req, res) => {
   console.log("api/render-item called");

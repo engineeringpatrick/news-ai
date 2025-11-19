@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   apiAppendTranscript,
   apiNextItems,
-  apiRenderItem,
+  apiRenderItem
 } from "../api";
 import type {
   DialogueLine,
@@ -66,6 +66,7 @@ export function useAudioScheduler({
   const [renderedQueue, setRenderedQueue] = useState<RenderedItemWithPersona[]>([]);
   const [nowPlaying, setNowPlaying] = useState<RenderedItemWithPersona | null>(null);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
+  const [storyToRenderIdx, setStoryToRenderIdx] = useState<number>(0);
 
   // Single audio element
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -109,7 +110,7 @@ export function useAudioScheduler({
         isFetchingStoriesRef.current = false;
       }
     })();
-  }, [isPlaying, queue.length, newsTopic, setQueue]);
+  }, [queue.length, renderedQueue.length, newsTopic]);
 
   // 2) Persona change:
   //    - bump persona version
@@ -117,63 +118,60 @@ export function useAudioScheduler({
   //    - keep queue A
   //    - do NOT kill current line; we handle switch after the line finishes
   useEffect(() => {
+    console.log("personaConfig changed, bumping persona version and flushing renderedQueue");
     personaVersionRef.current += 1;
     setRenderedQueue([]);
+    setStoryToRenderIdx(0);
+    isRenderingRef.current = false;
     // currentStoryRef and nowPlaying are left as-is for the current line.
   }, [personaConfig]);
 
   // 3) Pre-render next stories from Queue A into Queue B while playing
   useEffect(() => {
+    console.log("checking to render next story", { queueLength: queue.length, renderedQueueLength: renderedQueue.length, isRenderingRef: isRenderingRef.current });
     if (!isPlaying) return;
     if (!queue.length) return;
     if (isRenderingRef.current) return;
 
     const MAX_RENDERED_AHEAD = 5;
-    // we keep invariant: renderedQueue[i] corresponds to queue[i]
-    if (renderedQueue.length >= Math.min(queue.length, MAX_RENDERED_AHEAD)) return;
-
-    const storyIndex = renderedQueue.length;
-    const story = queue[storyIndex];
-    if (!story) return;
+    if (renderedQueue.length >= MAX_RENDERED_AHEAD) return;
 
     isRenderingRef.current = true;
 
     const personaVersionAtRenderStart = personaVersionRef.current;
-    let cancelled = false;
 
+    const storyToRender = queue[storyToRenderIdx];
     (async () => {
       try {
-        const rendered = await apiRenderItem(story, personaConfig);
-        if (cancelled) return;
+        if (!storyToRender) { console.log("story to render is null"); return;  }
 
-        if (!rendered || !rendered.lines || !rendered.lines.length) {
-          // Skip bad story
-          setQueue((q) => q.filter((_, idx) => idx !== storyIndex));
-          return;
-        }
+        const rendered = await apiRenderItem(queue[storyToRenderIdx] as NewsStory, personaConfig);
+        if (!rendered) { return; }
 
         // If persona changed during render, drop this result
-        if (personaVersionRef.current !== personaVersionAtRenderStart) return;
+        if (personaVersionRef.current !== personaVersionAtRenderStart) { console.log("returning because persona changed"); return; }
 
         const tagged: RenderedItemWithPersona = {
           ...rendered,
           personaVersion: personaVersionAtRenderStart,
         };
 
+        setStoryToRenderIdx((idx) => idx + 1);
         setRenderedQueue((prev) => [...prev, tagged]);
       } finally {
-        isRenderingRef.current = false;
+        if (personaVersionRef.current === personaVersionAtRenderStart) {
+          isRenderingRef.current = false;
+        }      
       }
     })();
 
-    return () => {
-      cancelled = true;
-    };
-  }, [isPlaying, queue, renderedQueue.length, personaConfig, nowPlaying, setQueue]);
+    return () => {};
+  }, [queue.length, renderedQueue.length, isRenderingRef]);
 
   // 4) When playing and there is no nowPlaying but we have rendered items, start next story
   useEffect(() => {
     if (!isPlaying) return;
+    console.log("do I play next story?", { isPlaying, nowPlaying, renderedQueueLength: renderedQueue.length });
     if (nowPlaying) return;
     if (!renderedQueue.length) return;
 
@@ -181,12 +179,12 @@ export function useAudioScheduler({
 
     // Remove corresponding story from Queue A prefix
     setQueue((q) => q.slice(1));
-
     setRenderedQueue(rest);
+    setStoryToRenderIdx((idx) => idx - 1);
     setNowPlaying(next as RenderedItemWithPersona);
     setCurrentLineIndex(0);
     currentStoryRef.current = next!.story as NewsStory;
-  }, [isPlaying, nowPlaying, renderedQueue, setQueue]);
+  }, [isPlaying, nowPlaying, renderedQueue]);
 
   // 5) Play current line of nowPlaying
   useEffect(() => {
@@ -241,7 +239,9 @@ export function useAudioScheduler({
       // - drop current rendered story
       // - requeue its raw story at front
       // - clear nowPlaying so a new version with new persona is rendered
+      console.log("did persona change?", personaVersionAtRender, personaVersionRef.current);
       if (personaChanged) {
+        console.log("persona changed mid-story, re-queuing story for re-render!!!!!!");
         const currentStory = currentStoryRef.current;
         if (currentStory) {
           setQueue((q) => [currentStory, ...q]);
@@ -314,9 +314,7 @@ export function useAudioScheduler({
     isPlaying,
     nowPlaying,
     currentLineIndex,
-    audio,
-    setQueue,
-    setTranscript,
+    personaVersionRef,
   ]);
 
   // 6) Pause audio when stopped
@@ -346,7 +344,6 @@ export function useAudioScheduler({
   }, [isPlaying, nowPlaying]);
 
   const skipLine = () => {
-    setCurrentLineIndex((i) => i + 1);
     audio?.pause();
     audio?.dispatchEvent(new Event('ended'))
   };

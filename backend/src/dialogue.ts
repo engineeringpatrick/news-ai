@@ -26,9 +26,8 @@ export async function generateDialogueLines(story: NewsStory, personaConfig: Per
 		You produce alternating dialogue lines for Host A and Host B about one news story.
 
 		Persona configuration:
-		Host A: style=${personaConfig.personaA.style}, humour=${personaConfig.personaA.humour}, vibe=${personaConfig.personaA.vibe}
-		Host B: style=${personaConfig.personaB.style}, humour=${personaConfig.personaB.humour}, vibe=${personaConfig.personaB.vibe}
-		Global tone: ${personaConfig.globalTone}
+		Host A: name: $${personaConfig.personaA.name} style=${personaConfig.personaA.style}
+		Host B: name: $${personaConfig.personaB.name} style=${personaConfig.personaB.style}
 
 		Story facts (MUST GROUND ALL CLAIMS IN THESE FACTS):
 		${story.facts}
@@ -48,10 +47,11 @@ export async function generateDialogueLines(story: NewsStory, personaConfig: Per
 
 		Rules:
 		- Alternate speakers: A, B, A, B...
-		- 2 to 5 lines total, depending on richness of the story.
+		- 2-6 lines total, depending on richness of the story.
 		- Natural banter is allowed, but all factual claims must come from the facts.
 		- Keep each line short (no more than ~3 sentences).
 		- Do not fabricate additional facts or sources.
+		- The two hosts can converse and even call each out by their names.
 	`;
 
   const completion = await openai.chat.completions.create({

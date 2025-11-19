@@ -11,9 +11,8 @@ interface NewsStory {
 }
 
 interface PersonaConfig {
-	personaA: { name: string, style: string, humour: string, vibe: string },
-  personaB: { name: string, style: string, humour: string, vibe: string },
-  globalTone: string,
+	personaA: { name: string, style: string },
+  personaB: { name: string, style: string },
 }
 
 interface DialogueLine {
@@ -25,9 +24,8 @@ interface DialogueLine {
 }
 
 interface PersonaDelta {
-	personaA: { style: string | null, humour: string | null, vibe: string | null } | null,
-	personaB: { style: string | null, humour: string | null, vibe: string | null } | null,
-	globalTone: string | null
+	personaA: { style: string | null } | null,
+	personaB: { style: string | null } | null,
 }
 
 export { DialogueLine, NewsStory, PersonaConfig, PersonaDelta };

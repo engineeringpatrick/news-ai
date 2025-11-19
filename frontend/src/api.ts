@@ -16,16 +16,18 @@ interface RenderItemResponse extends RenderedItem {}
 
 export async function apiUserCommand(
   command: string,
-  personaConfig: PersonaConfig
+  personaConfig: PersonaConfig,
+  newsTopic: string
 ): Promise<UserCommandResponse | null> {
   try {
     const res = await fetch(`${API_BASE}/api/user-command`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ command, personaConfig })
+      body: JSON.stringify({ command, personaConfig, newsTopic })
     });
     if (!res.ok) return null;
     const data = (await res.json()) as UserCommandResponse;
+    console.log("apiUserCommand response", data);
     return data;
   } catch (err) {
     console.error("apiUserCommand error", err);
@@ -37,7 +39,7 @@ export async function apiNextItems(
 	newsTopic: string
 ): Promise<NextItemResponse | null> {
   try {
-    const res = await fetch(`${API_BASE}/api/next-item`, {
+    const res = await fetch(`${API_BASE}/api/next-items`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ newsTopic })

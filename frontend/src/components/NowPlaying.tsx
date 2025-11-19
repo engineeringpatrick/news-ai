@@ -60,9 +60,8 @@ const NowPlaying: React.FC<NowPlayingProps> = ({ nowPlaying, isRenderingItem }) 
     >
       
       <h2 style={{ marginTop: 0 }}>Now Playing</h2>
-      {story.image && (
       <img
-        src={story.image}
+        src={story.image ? story.image : "/placeholder.webp"}
         alt={story.headline}
         style={{
           maxWidth: "100%",
@@ -70,7 +69,6 @@ const NowPlaying: React.FC<NowPlayingProps> = ({ nowPlaying, isRenderingItem }) 
           marginBottom: "0.75rem"
         }}
       />
-      )}
       <h3 style={{ margin: "0 0 0.25rem 0" }}>{story.headline}</h3>
       <p style={{ fontSize: "0.8rem", opacity: 0.75, margin: 0 }}>{story.publisher || ""}</p>
       <a

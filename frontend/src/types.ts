@@ -1,14 +1,11 @@
 export interface Persona {
   name: string;
   style: string;
-  humour: string;
-  vibe: string;
 }
 
 export interface PersonaConfig {
   personaA: Persona;
   personaB: Persona;
-  globalTone: string;
 }
 
 export interface NewsStory {
