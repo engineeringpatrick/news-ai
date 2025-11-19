@@ -1,0 +1,10 @@
+- https://www.thejournal.ie/trump-says-saudi-prince-knew-nothing-about-journalists-murder-6879255-Nov2025/
+- https://www.thejournal.ie/trump-says-saudi-prince-knew-nothing-about-journalists-murder-6879255-Nov2025/
+- https://www.thejournal.ie/trump-says-saudi-prince-knew-nothing-about-journalists-murder-6879255-Nov2025/
+- https://www.thejournal.ie/trump-says-saudi-prince-knew-nothing-about-journalists-murder-6879255-Nov2025/
+- https://www.thejournal.ie/trump-says-saudi-prince-knew-nothing-about-journalists-murder-6879255-Nov2025/
+- https://www.thejournal.ie/trump-says-saudi-prince-knew-nothing-about-journalists-murder-6879255-Nov2025/
+- https://www.thejournal.ie/trump-says-saudi-prince-knew-nothing-about-journalists-murder-6879255-Nov2025/
+- https://www.thejournal.ie/trump-says-saudi-prince-knew-nothing-about-journalists-murder-6879255-Nov2025/
+- https://www.thejournal.ie/trump-says-saudi-prince-knew-nothing-about-journalists-murder-6879255-Nov2025/
+- https://www.thejournal.ie/trump-says-saudi-prince-knew-nothing-about-journalists-murder-6879255-Nov2025/
