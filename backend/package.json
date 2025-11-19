@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch src -e ts --exec ts-node src/server.ts"
+    "dev": "NODE_ENV=development nodemon --watch src -e ts --exec ts-node src/server.ts",
+    "build": "tsc",
+    "start": "NODE_ENV=production node dist/server.js"
   },
   "author": "",
   "license": "ISC",
