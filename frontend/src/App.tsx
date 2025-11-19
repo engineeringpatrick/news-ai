@@ -29,15 +29,12 @@ const App: React.FC = () => {
   const [newsTopic, setNewsTopic] = usePersistedState<string>("newsTopic", "global");
   const [queue, setQueue] = useState<NewsStory[]>([]);
   const [transcript, setTranscript] = useState<TranscriptLine[]>([]);
-  const [isRenderingItem, setIsRenderingItem] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
   const { nowPlaying, start, stop, skipLine, skipStory } = useAudioScheduler({
     queue,
     setQueue,
     setTranscript,
-    isRenderingItem,
-    setIsRenderingItem,
     isPlaying,
     setIsPlaying,
     personaConfig,
@@ -96,7 +93,7 @@ const App: React.FC = () => {
         }}
       >
         <div>
-          <NowPlaying nowPlaying={nowPlaying} isRenderingItem={isRenderingItem} />
+          <NowPlaying nowPlaying={nowPlaying} isRenderingItem={isPlaying && !nowPlaying} />
           <Transcript lines={transcript} />
         </div>
         <QueueSidebar queue={queue} />
