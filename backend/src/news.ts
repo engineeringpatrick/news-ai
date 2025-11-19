@@ -4,9 +4,9 @@ import { NEWSAPI_KEY } from './config';
 
 const newsAPI = new NewsAPI(NEWSAPI_KEY as string);
 
-export async function fetchStoriesForTopic(topic = 'global') {
+export async function fetchStoriesForTopic(topic = 'global', count = 3) {
 	const isGeneric = topic === 'global';
-  const data = isGeneric ? await newsAPI.getTopHeadlines({ pageSize: 1 }) : await newsAPI.getEverything({ q: topic, language: 'en', pageSize: 1, sortBy: 'publishedAt' });
+  const data = isGeneric ? await newsAPI.getTopHeadlines({ pageSize: count }) : await newsAPI.getEverything({ q: topic, language: 'en', pageSize: count, sortBy: 'publishedAt' });
 
   // deduplicate by url + soft title match
   const seen = new Map();
@@ -48,9 +48,9 @@ export async function fetchStoriesForTopic(topic = 'global') {
   return stories;
 }
 
-export async function fetchSingleStory(topic = 'global') {
-  const stories = await fetchStoriesForTopic(topic);
+export async function fetchStories(topic = 'global', count = 3) {
+  const stories = await fetchStoriesForTopic(topic, count);
   if (!stories.length) return null;
 	
-  return stories[0];
+  return stories.slice(0, count);
 }

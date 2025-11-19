@@ -29,10 +29,17 @@ const App: React.FC = () => {
   const [newsTopic, setNewsTopic] = usePersistedState<string>("newsTopic", "global");
   const [queue, setQueue] = useState<NewsStory[]>([]);
   const [transcript, setTranscript] = useState<TranscriptLine[]>([]);
+  const [isRenderingItem, setIsRenderingItem] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  const { nowPlaying, start, isPlaying } = useAudioScheduler({
+  const { nowPlaying, start, stop, skipLine, skipStory } = useAudioScheduler({
     queue,
     setQueue,
+    setTranscript,
+    isRenderingItem,
+    setIsRenderingItem,
+    isPlaying,
+    setIsPlaying,
     personaConfig,
     newsTopic,
   });
@@ -41,6 +48,7 @@ const App: React.FC = () => {
     const data = await apiUserCommand(command, personaConfig);
     if (!data) return;
 
+    console.log("api/user-command response", data);
     const { personaConfig: updatedPersona, newsTopic, newStories } = data;
 
     // persona + topic
@@ -59,10 +67,10 @@ const App: React.FC = () => {
         return current ? [current, ...newStories, ...rest] : [...newStories, ...rest];
       });
     }
+    else {
+      setIsPlaying(false);
+    }
   };
-
-  // For display only; transcript append to backend handled inside hook via apiAppendTranscript
-  // (If you want local transcript to only show played lines, you can move that logic here instead.)
 
   return (
     <div
@@ -72,12 +80,12 @@ const App: React.FC = () => {
         margin: "0 auto"
       }}
     >
-      <h1 style={{ marginTop: 0, marginBottom: "0.25rem" }}>Two-Host AI Newscast</h1>
+      <h1 style={{ marginTop: 0, marginBottom: "0.25rem" }}>Welcome to News.AI</h1>
       <p style={{ fontSize: "0.9rem", opacity: 0.75, marginTop: 0 }}>
         Click <strong>Start</strong> once, then type requests like “soccer news”, “less snark”, or “more numbers”.
       </p>
 
-      <Controls onStart={start} onCommand={handleCommand} isPlaying={isPlaying} />
+      <Controls onStart={start} onCommand={handleCommand} isPlaying={isPlaying} pause={stop} resume={start} skipLine={skipLine} skipStory={skipStory}/>
 
       <div
         style={{
@@ -88,11 +96,14 @@ const App: React.FC = () => {
         }}
       >
         <div>
-          <NowPlaying nowPlaying={nowPlaying} />
+          <NowPlaying nowPlaying={nowPlaying} isRenderingItem={isRenderingItem} />
           <Transcript lines={transcript} />
         </div>
         <QueueSidebar queue={queue} />
       </div>
+      <footer style={{ marginTop: "4rem", textAlign: "center", fontSize: "0.8rem", color: "#555" }}>
+        <p>Made with ♥ by <a href="https://patrickdeniso.com/">Patrick</a></p>
+      </footer>
     </div>
   );
 };

@@ -36,4 +36,4 @@ export interface RenderedItem {
   lines: DialogueLine[];
 }
 
-export interface TranscriptLine extends DialogueLine {}
+export type TranscriptLine = Omit<DialogueLine, 'audioBase64' | 'mime'>;

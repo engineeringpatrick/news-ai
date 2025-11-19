@@ -5,13 +5,17 @@ interface ControlsProps {
   onStart: () => void;
   onCommand: (command: string) => void;
   isPlaying: boolean;
+  pause: () => void;
+  resume: () => void;
+  skipLine: () => void;
+  skipStory: () => void;
 }
 
-const Controls: React.FC<ControlsProps> = ({ onStart, onCommand, isPlaying }) => {
+const Controls: React.FC<ControlsProps> = ({ onStart, onCommand, isPlaying, pause, resume, skipLine, skipStory }) => {
   const [input, setInput] = useState("");
 
   const handleStartClick = () => {
-    if (!isPlaying && input.trim()) {
+    if (input.trim()) {
       onCommand(input.trim());
     }
     onStart();
@@ -37,7 +41,7 @@ const Controls: React.FC<ControlsProps> = ({ onStart, onCommand, isPlaying }) =>
           cursor: "pointer"
         }}
       >
-        {isPlaying ? "Running…" : "Start"}
+        {isPlaying ? "Send update" : "Start"}
       </button>
       <form onSubmit={handleSubmit} style={{ flex: 1 }}>
         <input
@@ -54,6 +58,10 @@ const Controls: React.FC<ControlsProps> = ({ onStart, onCommand, isPlaying }) =>
           onChange={(e) => setInput(e.target.value)}
         />
       </form>
+      <button onClick={pause}>pause</button>
+      <button onClick={resume}>resume</button>
+      <button onClick={skipLine}>skip line</button>
+      <button onClick={skipStory}>skip story</button>
     </div>
   );
 };

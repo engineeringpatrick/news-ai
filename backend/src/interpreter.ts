@@ -30,9 +30,9 @@ Schema (strict):
 }
 
 Rules:
-- If the user only changes tone/personality, set toneOnly=true, topicOnly=false.
+- If the user only changes tone/personality (e.g. "now make the speakers more petty"), set toneOnly=true, topicOnly=false.
 - If they only change content (e.g. "show me soccer news"), set topicOnly=true.
-- If they do both, set toneAndTopic=true.
+- If they do both (e.g. "show me italy news but be angry about it", "talk about the ukrainian war with a sleepy voice"), set toneAndTopic=true.
 - Always try to infer a reasonable newsTopic (e.g. "soccer", "AI", "Canada tech") if they ask for content.
 - Do NOT add extra fields.
 - If something is not changed, set it to null in personaDelta.

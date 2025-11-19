@@ -9,7 +9,7 @@ interface UserCommandResponse {
 }
 
 interface NextItemResponse {
-  story: NewsStory | null;
+  newStories: NewsStory[];
 }
 
 interface RenderItemResponse extends RenderedItem {}
@@ -33,7 +33,7 @@ export async function apiUserCommand(
   }
 }
 
-export async function apiNextItem(
+export async function apiNextItems(
 	newsTopic: string
 ): Promise<NextItemResponse | null> {
   try {

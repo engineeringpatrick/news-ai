@@ -4,8 +4,9 @@ import { ttsLines } from './cartesia';
 import { PORT } from './config';
 import { generateDialogueLines } from './dialogue';
 import { applyPersonaDelta, interpretCommand } from './interpreter';
-import { fetchSingleStory } from './news';
+import { fetchStories } from './news';
 import { appendShowNote, appendTranscriptLine, appendVttEntry } from './storage';
+import { NewsStory } from './types';
 
 const app = express();
 app.use(cors());
@@ -41,16 +42,13 @@ app.post('/api/user-command', async (req, res) => {
     const updatedPersona = applyPersonaDelta(current, interpreted.personaDelta);
 
     let newsTopic = current.newsTopic || 'global';
-    let stories = [];
+    let stories: NewsStory[] = [];
     console.log('interpreted command', interpreted);
     if (interpreted.topicOnly || interpreted.toneAndTopic) {
       newsTopic = interpreted.newsTopic || newsTopic;
-
-      const story = await fetchSingleStory(newsTopic);
-      console.log('fetched story for topic', newsTopic, story ? story.headline : 'none');
-      if (story) stories.push(story);
+      stories = await fetchStories(newsTopic, 6) as NewsStory[];
     }
-
+    
     res.json({
       personaConfig: updatedPersona,
       newsTopic,
@@ -63,18 +61,18 @@ app.post('/api/user-command', async (req, res) => {
 });
 
 // 2) Queue refill: get an additional news story
-app.post('/api/next-item', async (req, res) => {
+app.post('/api/next-items', async (req, res) => {
   console.log("api/next-item called with", req.body);
   try {
     const { newsTopic } = req.body;
     const topic = newsTopic || 'global';
 
-    const story = await fetchSingleStory(topic);
-    if (!story) {
+    const stories = await fetchStories(topic, 3);
+    if (!stories) {
       return res.status(200).json({ story: null });
     }
 
-    res.json({ story });
+    res.json({ snewStories: stories });
   } catch (e) {
     console.error('/api/next-item error', e);
     res.status(500).json({ error: 'internal_error' });

@@ -50,7 +50,6 @@ export async function generateDialogueLines(story: NewsStory, personaConfig: Per
 		- Alternate speakers: A, B, A, B...
 		- 2 to 5 lines total, depending on richness of the story.
 		- Natural banter is allowed, but all factual claims must come from the facts.
-		- Include at least one [src] marker in each line to indicate citation, e.g. "according to [src]".
 		- Keep each line short (no more than ~3 sentences).
 		- Do not fabricate additional facts or sources.
 	`;

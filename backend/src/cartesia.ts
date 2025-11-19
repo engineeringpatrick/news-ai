@@ -3,6 +3,7 @@ import { Readable } from "stream";
 import { CARTESIA_API_KEY } from "./config";
 import { DialogueLine } from "./types";
 
+const voices = ['5ee9feff-1265-424a-9d7f-8e4d431a12c7', 'e07c00bc-4134-4eae-9ea4-1a55fb45746b']
 const client = new CartesiaClient({ apiKey: CARTESIA_API_KEY });
 
 async function streamToBuffer(stream: Readable): Promise<Buffer> {
@@ -23,13 +24,14 @@ export async function ttsLines(lines: DialogueLine[]) {
 
   const out = [];
 
+  let voiceIdx = 0;
   for (const line of lines) {
     const stream = await client.tts.bytes({
       modelId: "sonic-2",
       transcript: line.text,
       voice: {
         mode: "id",
-        id: "694f9389-aac1-45b6-b726-9d9369183238",
+        id: voices[voiceIdx++ % voices.length],
       },
       language: "en",
       outputFormat: {
