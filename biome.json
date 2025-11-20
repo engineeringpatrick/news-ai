@@ -54,13 +54,7 @@
 					},
 					"nursery": {
 						"useExplicitType": "off",
-						"noUnresolvedImports": "off",
-						"noSecrets": {
-							"level": "error",
-							"options": {
-								"entropyThreshold": 100
-							}
-						}
+						"noUnresolvedImports": "off"
 					},
 					"suspicious": {
 						"noReactSpecificProps": "off",

@@ -10,13 +10,8 @@
 		"test:e2e": "playwright test --ui",
 		"test:ci": "vitest run",
 		"test:e2e:ci": "playwright test",
-		"lint:tsc": "tsc -b",
-		"lint:biome": "biome check --write --unsafe",
 		"build": "vite build",
-		"preview": "vite preview",
-		"lint": "biome lint .",
-		"fix": "biome check --write .",
-		"format": "biome format --write"
+		"preview": "vite preview"
 	},
 	"dependencies": {
 		"@radix-ui/react-label": "^2.1.8",
@@ -36,7 +31,6 @@
 		"valibot": "1.1.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.2",
 		"@playwright/test": "1.55.0",
 		"@tailwindcss/vite": "^4.1.12",
 		"@testing-library/dom": "10.4.1",

@@ -1,0 +1,33 @@
+{
+	"name": "news-ai",
+	"version": "1.0.0",
+	"description": "This is a simple two-host broadcast powered by AI.",
+	"homepage": "https://github.com/engineeringpatrick/news-ai#readme",
+	"bugs": {
+		"url": "https://github.com/engineeringpatrick/news-ai/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/engineeringpatrick/news-ai.git"
+	},
+	"license": "ISC",
+	"author": "",
+	"type": "commonjs",
+	"main": "index.js",
+	"scripts": {
+		"lint": "biome lint .",
+		"fix": "biome check --write .",
+		"format": "biome format --write",
+		"prepare": "husky"
+	},
+	"lint-staged": {
+		"*.{ts,tsx,js,jsx,json,md}": [
+			"npm run format"
+		]
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.6",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.2.7"
+	}
+}
