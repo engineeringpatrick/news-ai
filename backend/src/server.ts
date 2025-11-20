@@ -46,12 +46,6 @@ app.post('/api/user-command', async (req, res) => {
 			)) as NewsStory[];
 		}
 
-		console.log(
-			'interpreted command:',
-			interpreted,
-			' returning stories:',
-			stories.length,
-		);
 		res.json({
 			personaConfig: updatedPersona,
 			newsTopic: updatedNewsTopic,
