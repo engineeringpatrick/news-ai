@@ -11,7 +11,8 @@
 		"test:ci": "vitest run",
 		"test:e2e:ci": "playwright test",
 		"build": "vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"deploy": "npm run build && wrangler pages deploy dist"
 	},
 	"dependencies": {
 		"@radix-ui/react-label": "^2.1.8",
