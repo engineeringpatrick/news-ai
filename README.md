@@ -13,7 +13,7 @@ Can be used at https://news-ai-6dh.pages.dev/
 ### Local solution
 ```
 git clone https://github.com/engineeringpatrick/news-ai/
-npm news-ai
+cd news-ai
 npm --prefix backend i
 npm --prefix frontend i
 npm --prefix backend run dev
@@ -34,6 +34,7 @@ npm --prefix frontend run dev
 - NLP processing, news fetching, dialogue generation and TTS generation is all done by the backend.
 - Client keeps two queues of news stories. One containing raw facts (queue A), one containing dialogue lines and audio (queue B).
 - If the user wants to change the tone, only queue B has to be re-computed. If the user wants to change news topic, or both, queue A will have to be cleared and recomputed.
+
 
 
 
