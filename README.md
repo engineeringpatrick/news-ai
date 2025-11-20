@@ -28,12 +28,14 @@ npm --prefix frontend run dev
 - vite + react
 - shadcn + tailwindcss
 - node.js + express
+- biome for formatting and linting
 
 ## Architecture 
 **the architecture below is subject to change - most logic will be moved to the backend and lines should be sent in chunk to minimize standby for the user**
 - NLP processing, news fetching, dialogue generation and TTS generation is all done by the backend.
 - Client keeps two queues of news stories. One containing raw facts (queue A), one containing dialogue lines and audio (queue B).
 - If the user wants to change the tone, only queue B has to be re-computed. If the user wants to change news topic, or both, queue A will have to be cleared and recomputed.
+
 
 
 
