@@ -102,7 +102,7 @@ app.post('/api/transcript-append', (req, res) => {
 		if (startMs != null && endMs != null) {
 			appendVttEntry({startMs, endMs, text: line.text});
 		}
-		if (line.sources?.lenght) {
+		if (line.sources?.length) {
 			appendShowNote(line.sources[0]);
 		}
 
