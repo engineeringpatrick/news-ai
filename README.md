@@ -2,7 +2,7 @@
 
 This is a simple two-host broadcast powered by AI. 
 
-<img width="1300" height="1217" alt="image" src="https://github.com/user-attachments/assets/6da18993-1e11-445e-a160-6cb6be96375c" />
+<img width="1248" height="1189" alt="image" src="https://github.com/user-attachments/assets/902107af-e964-475d-a546-4dbdb22f9146" />
 
 ## How to use?
 ### Hosted solution
@@ -32,6 +32,7 @@ npm --prefix frontend run dev
 - NLP processing, news fetching, dialogue generation and TTS generation is all done by the backend.
 - Client keeps two queues of news stories. One containing raw facts (queue A), one containing dialogue lines and audio (queue B).
 - If the user wants to change the tone, only queue B has to be re-computed. If the user wants to change news topic, or both, queue A will have to be cleared and recomputed.
+
 
 
 
