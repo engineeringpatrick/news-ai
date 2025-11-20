@@ -27,7 +27,6 @@ export async function apiUserCommand(
     });
     if (!res.ok) return null;
     const data = (await res.json()) as UserCommandResponse;
-    console.log("apiUserCommand response", data);
     return data;
   } catch (err) {
     console.error("apiUserCommand error", err);

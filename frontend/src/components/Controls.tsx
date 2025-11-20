@@ -28,6 +28,9 @@ const Controls: React.FC<ControlsProps> = ({ onStart, onCommand, isPlaying, paus
     if (!input.trim()) return;
     onCommand(input.trim());
     setInput("");
+    if (!isPlaying) {
+      onStart();
+    }
   };
 
   return (
@@ -43,7 +46,7 @@ const Controls: React.FC<ControlsProps> = ({ onStart, onCommand, isPlaying, paus
           cursor: "pointer"
         }}
       >
-        {isPlaying ? "Send update" : "Start"}
+        {isPlaying ? "Send" : "Start"}
       </button>
       <form onSubmit={handleSubmit} style={{ flex: 1 }}>
         <input
@@ -60,8 +63,8 @@ const Controls: React.FC<ControlsProps> = ({ onStart, onCommand, isPlaying, paus
           onChange={(e) => setInput(e.target.value)}
         />
       </form>
-      <Button onClick={pause} variant="outline" size="icon" aria-label="Pause"><Pause/></Button>
-      <Button onClick={resume} variant="outline" size="icon" aria-label="Resume"><Play/></Button>
+      { isPlaying && <Button onClick={pause} variant="outline" size="icon" aria-label="Pause"><Pause/></Button> }
+      { !isPlaying && <Button onClick={resume} variant="outline" size="icon" aria-label="Resume"><Play/></Button> }
       <Button onClick={skipLine} variant="outline" size="icon" aria-label="Skip Line"><SkipForward/></Button>
       <Button onClick={skipStory} variant="outline" size="icon" aria-label="Skip Story"><ListRestart/></Button>
     </div>

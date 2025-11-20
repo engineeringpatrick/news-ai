@@ -14,9 +14,7 @@ export function usePersistedState<T>(key: string, defaultValue: T): [T, (value: 
   useEffect(() => {
     try {
       localStorage.setItem(key, JSON.stringify(value));
-    } catch {
-      // ignore
-    }
+    } catch { }
   }, [key, value]);
 
   const update = (v: T | ((prev: T) => T)) => {

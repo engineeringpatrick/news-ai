@@ -17,7 +17,7 @@ export function appendTranscriptLine(obj: any) {
 }
 
 export function appendVttEntry({ startMs, endMs, text } : { startMs: number, endMs: number, text: string }) {
-  // Very naive VTT formatting
+  // very naive VTT formatting
   if (!fs.existsSync(vttPath)) {
     fs.writeFileSync(vttPath, 'WEBVTT\n\n', 'utf8');
   }
