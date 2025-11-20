@@ -26,6 +26,8 @@ interface UseAudioSchedulerParams {
 
   personaConfig: PersonaConfig;
   newsTopic: string;
+
+  volume: number;
 }
 
 interface UseAudioSchedulerReturn {
@@ -61,6 +63,7 @@ export function useAudioScheduler({
   setIsPlaying,
   personaConfig,
   newsTopic,
+  volume
 }: UseAudioSchedulerParams): UseAudioSchedulerReturn {
   // Queue B: rendered stories (with audio)
   const [renderedQueue, setRenderedQueue] = useState<RenderedItemWithPersona[]>([]);
@@ -123,7 +126,6 @@ export function useAudioScheduler({
     setRenderedQueue([]);
     setStoryToRenderIdx(0);
     isRenderingRef.current = false;
-    // currentStoryRef and nowPlaying are left as-is for the current line.
   }, [personaConfig]);
 
   // 3) Pre-render next stories from Queue A into Queue B while playing
@@ -276,6 +278,7 @@ export function useAudioScheduler({
     }
 
     audio.src = src;
+    audio.volume = volume;
 
     audio.onended = () => {
       void handleFinished();
@@ -317,6 +320,10 @@ export function useAudioScheduler({
     personaVersionRef,
   ]);
 
+  useEffect(() => {
+    audioRef.current!.volume = volume;
+  }, [volume]);
+
   // 6) Pause audio when stopped
   useEffect(() => {
     if (!audio) return;
@@ -331,7 +338,7 @@ export function useAudioScheduler({
     const staticAudio = new Audio("/tv-static.mp3");
 
     staticAudio.loop = true;
-    staticAudio.volume = 0.3;
+    staticAudio.volume = volume * 0.5;
 
     staticAudio.play().catch(() => {
       console.log("autoplay blocked for static audio");

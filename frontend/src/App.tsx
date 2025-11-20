@@ -4,6 +4,7 @@ import Controls from "./components/Controls";
 import NowPlaying from "./components/NowPlaying";
 import QueueSidebar from "./components/QueueSidebar";
 import Transcript from "./components/Transcript";
+import VolumeSlider from "./components/VolumeControl";
 import { useAudioScheduler } from "./hooks/useAudioScheduler";
 import { usePersistedState } from "./hooks/usePersistedState";
 import type { NewsStory, PersonaConfig, TranscriptLine } from "./types";
@@ -25,6 +26,7 @@ const App: React.FC = () => {
   const [queue, setQueue] = useState<NewsStory[]>([]);
   const [transcript, setTranscript] = useState<TranscriptLine[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(0.5);
 
   const { nowPlaying, start, stop, skipLine, skipStory } = useAudioScheduler({
     queue,
@@ -34,6 +36,7 @@ const App: React.FC = () => {
     setIsPlaying,
     personaConfig,
     newsTopic,
+    volume,
   });
 
   const handleCommand = async (command: string) => {
@@ -43,7 +46,6 @@ const App: React.FC = () => {
     console.log("api/user-command response", data);
     const { personaConfig: updatedPersona, newsTopic: newsTopicData, newStories } = data;
 
-    // persona + topic
     setPersonaConfig((prev) => ({
       ...prev,
       ...updatedPersona,
@@ -71,11 +73,11 @@ const App: React.FC = () => {
     >
       <h1 style={{ marginTop: 0, marginBottom: "0.25rem" }}>Welcome to News.AI</h1>
       <p style={{ fontSize: "0.9rem", opacity: 0.75, marginTop: 0 }}>
-        Click <strong>Start</strong> once, then type requests like “soccer news”, “less snark”, or “more numbers”.
+        Click <strong>Start</strong> once, then type requests like “show me soccer news”, “less snark”, or “more numbers”.
       </p>
 
       <Controls onStart={start} onCommand={handleCommand} isPlaying={isPlaying} pause={stop} resume={start} skipLine={skipLine} skipStory={skipStory}/>
-
+      <VolumeSlider volume={volume} setVolume={setVolume}/>
       <div
         style={{
           display: "grid",

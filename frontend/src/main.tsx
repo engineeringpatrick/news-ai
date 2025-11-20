@@ -4,6 +4,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
 import App from "./App"
+import { ThemeProvider } from './components/ui/theme-provider'
 import './global.css'
 
 const queryClient = new QueryClient()
@@ -17,7 +18,9 @@ if (container) {
 					<QueryClientProvider client={queryClient}>
 						<ReactQueryDevtools initialIsOpen={false} />
 						<BrowserRouter>
+						<ThemeProvider>
 							<App />
+						</ThemeProvider>
 						</BrowserRouter>
 					</QueryClientProvider>
 				</StrictMode>

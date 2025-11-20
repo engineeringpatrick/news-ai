@@ -1,5 +1,7 @@
+import { ListRestart, Pause, Play, SkipForward } from "lucide-react";
 import type { FormEvent } from "react";
 import React, { useState } from "react";
+import { Button } from "./ui/button";
 
 interface ControlsProps {
   onStart: () => void;
@@ -53,15 +55,15 @@ const Controls: React.FC<ControlsProps> = ({ onStart, onCommand, isPlaying, paus
             background: "#020617",
             color: "#e5e7eb"
           }}
-          placeholder="Type a request: “soccer news”, “less snark”, “more numbers”…"
+          placeholder="What are you curious about today?"
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
       </form>
-      <button onClick={pause}>pause</button>
-      <button onClick={resume}>resume</button>
-      <button onClick={skipLine}>skip line</button>
-      <button onClick={skipStory}>skip story</button>
+      <Button onClick={pause} variant="outline" size="icon" aria-label="Pause"><Pause/></Button>
+      <Button onClick={resume} variant="outline" size="icon" aria-label="Resume"><Play/></Button>
+      <Button onClick={skipLine} variant="outline" size="icon" aria-label="Skip Line"><SkipForward/></Button>
+      <Button onClick={skipStory} variant="outline" size="icon" aria-label="Skip Story"><ListRestart/></Button>
     </div>
   );
 };

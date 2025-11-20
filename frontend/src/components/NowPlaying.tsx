@@ -64,7 +64,7 @@ const NowPlaying: React.FC<NowPlayingProps> = ({ nowPlaying, isRenderingItem }) 
         src={story.image ? story.image : "/placeholder.webp"}
         alt={story.headline}
         style={{
-          maxWidth: "100%",
+          maxWidth: "50%",
           borderRadius: 8,
           marginBottom: "0.75rem"
         }}
