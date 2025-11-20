@@ -12,7 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Default persona config if frontend doesn't provide one yet
+// default persona config if frontend doesn't provide one yet
 function defaultPersonaConfig() {
   return {
     personaA: {
@@ -26,7 +26,7 @@ function defaultPersonaConfig() {
   };
 }
 
-// 1) Interpret user command + maybe return new news stories
+// interpret user command + maybe return new news stories
 app.post('/api/user-command', async (req, res) => {
   console.log("api/user-command called with", req.body);
   try {
@@ -54,7 +54,7 @@ app.post('/api/user-command', async (req, res) => {
   }
 });
 
-// 2) Queue refill: get an additional news story
+// queue refill: get an additional news story
 app.post('/api/next-items', async (req, res) => {
   console.log("api/next-items called with", req.body);
   try {
@@ -81,7 +81,7 @@ const getFromFile = () => {
   const data = fs.readFileSync(filePath, 'utf-8');
   return JSON.parse(data);
 }
-// 3) Render-time dialogue + TTS for a given story
+// render-time dialogue + TTS for a given story
 app.post('/api/render-item', async (req, res) => {
   console.log("api/render-item called");
   try {
@@ -107,7 +107,7 @@ app.post('/api/render-item', async (req, res) => {
   }
 });
 
-// 4) Transcript line append
+// transcript line append
 app.post('/api/transcript-append', (req, res) => {
   try {
     const { line, startMs, endMs } = req.body;
