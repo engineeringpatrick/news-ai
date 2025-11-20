@@ -76,7 +76,7 @@ const App: React.FC = () => {
 	};
 
 	return (
-		<div className='mx-auto max-w-5xl p-6'>
+		<div className='mx-auto max-w-5xl p-6 min-h-screen flex flex-col'>
 			<header className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6'>
 				<div>
 					<h1 className='text-2xl font-semibold leading-tight'>News.AI</h1>
@@ -107,7 +107,6 @@ const App: React.FC = () => {
 					</div>
 				</div>
 			</header>
-
 			<section className='mb-4'>
 				<Controls
 					isPlaying={isPlaying}
@@ -122,8 +121,7 @@ const App: React.FC = () => {
 					<VolumeSlider setVolume={setVolume} volume={volume} />
 				</div>
 			</section>
-
-			<main className='grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6'>
+			<main className='flex-1 grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6'>
 				{/* left column */}
 				<div className='space-y-4'>
 					<div className='bg-slate-900/40 border border-slate-800 rounded-lg p-4'>
@@ -140,7 +138,7 @@ const App: React.FC = () => {
 				</div>
 
 				{/* right column */}
-				<div className='space-y-4'>
+				<div className='flex flex-col gap-4'>
 					<QueueSidebar queue={queue} />
 
 					<div className='bg-transparent text-sm text-gray-400 p-3 rounded-md'>
@@ -153,8 +151,7 @@ const App: React.FC = () => {
 					</div>
 				</div>
 			</main>
-
-			<footer className='mt-12 text-center text-sm text-gray-500'>
+			<footer className='text-center text-sm text-gray-500'>
 				<p>
 					Made with ♥ by{' '}
 					<a className='text-blue-400' href='https://patrickdeniso.com/'>

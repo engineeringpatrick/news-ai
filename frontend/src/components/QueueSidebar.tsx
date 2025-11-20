@@ -7,7 +7,7 @@ interface QueueSidebarProps {
 
 const QueueSidebar: React.FC<QueueSidebarProps> = ({queue}) => {
 	return (
-		<div className='p-4 border bg-slate-900/40 rounded-lg h-full max-h-[480px] overflow-y-auto'>
+		<div className='p-4 border bg-slate-900/40 rounded-lg min-h-[300px] max-h-[480px] overflow-y-auto'>
 			<h2 className='mt-0'>Up Next</h2>
 			{queue.length === 0 && (
 				<p className='text-[0.9rem] opacity-70'>Queue is currently empty.</p>
