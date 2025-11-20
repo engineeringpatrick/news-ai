@@ -107,19 +107,20 @@ export function useAudioScheduler({
 			try {
 				const res = await apiNextItems(newsTopic);
 				if (res?.newStories?.length) {
-					setQueue(q => [...q, ...res.newStories!]);
+					setQueue(q => [...q, ...res.newStories]);
 				}
 			} finally {
 				isFetchingStoriesRef.current = false;
 			}
 		})();
-	}, [queue.length, renderedQueue.length, newsTopic]);
+	}, [setQueue, isPlaying, queue.length, newsTopic]);
 
 	// 2) persona change:
 	//    - bump persona version
 	//    - flush renderedQueue
 	//    - keep queue A
 	//    - dont kill current line; we handle switch after the line finishes
+	// biome-ignore lint/correctness/useExhaustiveDependencies: effect must run on personaConfig change
 	useEffect(() => {
 		personaVersionRef.current += 1;
 		setRenderedQueue([]);
@@ -173,9 +174,13 @@ export function useAudioScheduler({
 				}
 			}
 		})();
-
-		return () => {};
-	}, [queue.length, renderedQueue.length, isRenderingRef]);
+	}, [
+		isPlaying,
+		queue[storyToRenderIdx],
+		storyToRenderIdx,
+		renderedQueue.length,
+		personaConfig,
+	]);
 
 	// 4) when playing and there is no nowPlaying but we have rendered items, start next story
 	useEffect(() => {
@@ -191,8 +196,8 @@ export function useAudioScheduler({
 		setStoryToRenderIdx(idx => idx - 1);
 		setNowPlaying(next as RenderedItemWithPersona);
 		setCurrentLineIndex(0);
-		currentStoryRef.current = next!.story as NewsStory;
-	}, [isPlaying, nowPlaying, renderedQueue]);
+		currentStoryRef.current = next?.story as NewsStory;
+	}, [isPlaying, nowPlaying, renderedQueue, setQueue]);
 
 	// 5) play current line of nowPlaying
 	useEffect(() => {
@@ -298,11 +303,7 @@ export function useAudioScheduler({
 			audio.onended = null;
 			audio.onerror = null;
 		};
-	}, [isPlaying, nowPlaying, currentLineIndex]);
-
-	useEffect(() => {
-		audioRef.current!.volume = volume;
-	}, [volume]);
+	}, [isPlaying, nowPlaying, currentLineIndex, setTranscript, audio, volume]);
 
 	// 6) pause audio when stopped
 	useEffect(() => {
@@ -324,7 +325,7 @@ export function useAudioScheduler({
 			staticAudio.pause();
 			staticAudio.currentTime = 0;
 		};
-	}, [isPlaying, nowPlaying]);
+	}, [isPlaying, nowPlaying, volume]);
 
 	const skipLine = () => {
 		audio?.pause();

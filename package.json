@@ -22,6 +22,8 @@
 	},
 	"lint-staged": {
 		"*.{ts,tsx,js,jsx,json,md}": [
+			"npm run lint",
+			"npm run fix",
 			"npm run format"
 		]
 	},

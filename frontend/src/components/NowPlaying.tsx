@@ -26,18 +26,20 @@ const NowPlaying: React.FC<NowPlayingProps> = ({
 				</p>
 				<img
 					alt='TV static gif...'
+					height={120}
 					src='/tv-static.gif'
 					style={{
 						maxWidth: '100%',
 						borderRadius: 8,
 						marginBottom: '0.75rem',
 					}}
+					width={120}
 				/>
 			</div>
 		);
 	}
 
-	if (!(nowPlaying && nowPlaying.story)) {
+	if (!nowPlaying?.story) {
 		return (
 			<div
 				style={{
@@ -68,12 +70,14 @@ const NowPlaying: React.FC<NowPlayingProps> = ({
 			<h2 style={{marginTop: 0}}>Now Playing</h2>
 			<img
 				alt={story.headline}
+				height={120}
 				src={story.image ? story.image : '/placeholder.webp'}
 				style={{
 					maxWidth: '50%',
 					borderRadius: 8,
 					marginBottom: '0.75rem',
 				}}
+				width={120}
 			/>
 			<h3 style={{margin: '0 0 0.25rem 0'}}>{story.headline}</h3>
 			<p style={{fontSize: '0.8rem', opacity: 0.75, margin: 0}}>

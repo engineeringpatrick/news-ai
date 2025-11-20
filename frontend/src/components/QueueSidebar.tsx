@@ -37,13 +37,13 @@ const QueueSidebar: React.FC<QueueSidebarProps> = ({queue}) => {
 						{story.image && (
 							<img
 								alt={story.headline}
+								height={64}
 								src={story.image}
 								style={{
-									width: 64,
-									height: 64,
 									objectFit: 'cover',
 									borderRadius: 4,
 								}}
+								width={64}
 							/>
 						)}
 						<div>

@@ -31,5 +31,4 @@ export function render(
 	};
 }
 
-// biome-ignore lint: test file
 export * from '@testing-library/react';

@@ -1,8 +1,8 @@
 import OpenAI from 'openai';
-import { OPENAI_API_KEY } from './config';
-import { PersonaConfig, PersonaDelta } from './types';
+import {OPENAI_API_KEY} from './config';
+import type {PersonaConfig, PersonaDelta} from './types';
 
-const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+const openai = new OpenAI({apiKey: OPENAI_API_KEY});
 
 const SYSTEM_PROMPT = `
 You are a controller for a two-host AI newscast.
@@ -37,22 +37,25 @@ Rules:
 - If something is not changed, set it to null in personaDelta.
 `;
 
-export async function interpretCommand(command: string, currentPersona: PersonaConfig) {
-  if (!OPENAI_API_KEY) {
-    // fallback: naive heuristic
-    return {
-      toneOnly: false,
-      topicOnly: true,
-      toneAndTopic: false,
-      personaDelta: {
-        personaA: { style: null },
-        personaB: { style: null },
-      },
-      newsTopic: command // treat as topic
-    };
-  }
+export async function interpretCommand(
+	command: string,
+	currentPersona: PersonaConfig,
+) {
+	if (!OPENAI_API_KEY) {
+		// fallback: naive heuristic
+		return {
+			toneOnly: false,
+			topicOnly: true,
+			toneAndTopic: false,
+			personaDelta: {
+				personaA: {style: null},
+				personaB: {style: null},
+			},
+			newsTopic: command, // treat as topic
+		};
+	}
 
-  const userPrompt = `
+	const userPrompt = `
 		Current persona config (for context, do not just mirror):
 		${JSON.stringify(currentPersona, null, 2)}
 
@@ -62,50 +65,53 @@ export async function interpretCommand(command: string, currentPersona: PersonaC
 		Return ONLY valid JSON matching the schema.
 	`;
 
-  const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
-    messages: [
-      { role: 'system', content: SYSTEM_PROMPT },
-      { role: 'user', content: userPrompt }
-    ],
-    response_format: { type: 'json_object' }
-  });
+	const completion = await openai.chat.completions.create({
+		model: 'gpt-4o-mini',
+		messages: [
+			{role: 'system', content: SYSTEM_PROMPT},
+			{role: 'user', content: userPrompt},
+		],
+		response_format: {type: 'json_object'},
+	});
 
-  const raw = completion.choices[0]?.message?.content;
+	const raw = completion.choices[0]?.message?.content;
 
-  try {
-    return JSON.parse(raw as string);
-  } catch (e) {
-    console.error('interpretCommand parse error', e, raw);
-		
-    // fallback: treat as topic-only
-    return {
-      toneOnly: false,
-      topicOnly: true,
-      toneAndTopic: false,
-      personaDelta: {
-        personaA: { style: null },
-        personaB: { style: null },
-      },
-      newsTopic: command
-    };
-  }
+	try {
+		return JSON.parse(raw as string);
+	} catch (e) {
+		console.error('interpretCommand parse error', e, raw);
+
+		// fallback: treat as topic-only
+		return {
+			toneOnly: false,
+			topicOnly: true,
+			toneAndTopic: false,
+			personaDelta: {
+				personaA: {style: null},
+				personaB: {style: null},
+			},
+			newsTopic: command,
+		};
+	}
 }
 
-export function applyPersonaDelta(currentPersona: PersonaConfig, delta: PersonaDelta) {
-  const next = structuredClone(currentPersona);
+export function applyPersonaDelta(
+	currentPersona: PersonaConfig,
+	delta: PersonaDelta,
+) {
+	const next = structuredClone(currentPersona);
 
-  const { personaA, personaB } = delta;
+	const {personaA, personaB} = delta;
 
-  if (personaA) {
-    next.personaA.name = currentPersona.personaA.name;
-    next.personaA.style = personaA.style ?? next.personaA.style;
-  }
+	if (personaA) {
+		next.personaA.name = currentPersona.personaA.name;
+		next.personaA.style = personaA.style ?? next.personaA.style;
+	}
 
-  if (personaB) {
-    next.personaB.name = currentPersona.personaB.name;
-    next.personaB.style = personaB.style ?? next.personaB.style;
-  }
+	if (personaB) {
+		next.personaB.name = currentPersona.personaB.name;
+		next.personaB.style = personaB.style ?? next.personaB.style;
+	}
 
-  return next;
+	return next;
 }

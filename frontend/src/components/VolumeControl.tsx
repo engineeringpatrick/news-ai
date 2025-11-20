@@ -24,7 +24,6 @@ const VolumeSlider = ({volume, setVolume}: VolumeSliderParams) => {
 				</span>
 			</div>
 			<Slider
-				id='slider'
 				onValueChange={(volArr: number[]) =>
 					setVolume((volArr[0] as number) / 100)
 				}

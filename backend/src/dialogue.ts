@@ -1,27 +1,30 @@
 import OpenAI from 'openai';
-import { OPENAI_API_KEY } from './config';
-import { NewsStory, PersonaConfig } from './types';
+import {OPENAI_API_KEY} from './config';
+import type {NewsStory, PersonaConfig} from './types';
 
-const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+const openai = new OpenAI({apiKey: OPENAI_API_KEY});
 
-export async function generateDialogueLines(story: NewsStory, personaConfig: PersonaConfig) {
-  if (!OPENAI_API_KEY) {
-    // fallback: stub lines
-    return [
-      {
-        speaker: 'A',
-        text: `Stub line for: ${story.headline}`,
-        sources: [story.url]
-      },
-      {
-        speaker: 'B',
-        text: `Stub reply to: ${story.headline}`,
-        sources: [story.url]
-      }
-    ];
-  }
+export async function generateDialogueLines(
+	story: NewsStory,
+	personaConfig: PersonaConfig,
+) {
+	if (!OPENAI_API_KEY) {
+		// fallback: stub lines
+		return [
+			{
+				speaker: 'A',
+				text: `Stub line for: ${story.headline}`,
+				sources: [story.url],
+			},
+			{
+				speaker: 'B',
+				text: `Stub reply to: ${story.headline}`,
+				sources: [story.url],
+			},
+		];
+	}
 
-  const systemPrompt = `
+	const systemPrompt = `
 		You are a two-host newscast writer.
 		You produce alternating dialogue lines for Host A and Host B about one news story.
 
@@ -54,16 +57,16 @@ export async function generateDialogueLines(story: NewsStory, personaConfig: Per
 		- The two hosts can converse and even call each out by their names.
 	`;
 
-  const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: 'Generate dialogue now.' }
-    ],
-    response_format: { type: 'json_object' }
-  });
+	const completion = await openai.chat.completions.create({
+		model: 'gpt-4o-mini',
+		messages: [
+			{role: 'system', content: systemPrompt},
+			{role: 'user', content: 'Generate dialogue now.'},
+		],
+		response_format: {type: 'json_object'},
+	});
 
-  const raw = completion.choices[0]?.message?.content;
-  const parsed = JSON.parse(raw as string);
-  return parsed.lines || [];
+	const raw = completion.choices[0]?.message?.content;
+	const parsed = JSON.parse(raw as string);
+	return parsed.lines || [];
 }
