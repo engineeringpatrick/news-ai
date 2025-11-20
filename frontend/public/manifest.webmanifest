@@ -16,9 +16,9 @@
 	],
 	"id": "/",
 	"lang": "en",
-	"name": "Vitamin",
+	"name": "news.ai",
 	"scope": "/",
-	"short_name": "Vitamin",
+	"short_name": "news.ai",
 	"start_url": "/",
 	"theme_color": "#BD34FE"
 }
