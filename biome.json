@@ -21,8 +21,8 @@
 			"bracketSpacing": false,
 			"jsxQuoteStyle": "single",
 			"quoteStyle": "single",
-			"semicolons": "asNeeded",
-			"trailingCommas": "none"
+			"semicolons": "always",
+			"trailingCommas": "all"
 		}
 	},
 	"linter": {

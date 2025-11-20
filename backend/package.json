@@ -6,13 +6,17 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "NODE_ENV=development nodemon --watch src -e ts --exec ts-node src/server.ts",
     "build": "tsc",
-    "start": "NODE_ENV=production node dist/server.js"
+    "start": "NODE_ENV=production node dist/server.js",
+    "lint": "biome lint .",
+    "fix": "biome check --write .",
+    "format": "biome format --write"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
     "@cartesia/cartesia-js": "^2.2.9",
+    "biome": "^0.3.3",
     "express": "^5.1.0",
     "ts-newsapi": "^1.0.2"
   },
