@@ -85,24 +85,21 @@ const App: React.FC = () => {
 					</p>
 				</div>
 
-				<div className='flex items-center gap-3'>
-					<div className='text-sm bg-slate-800/60 px-3 py-1 rounded-sm text-gray-200'>
+				<div className='flex flex-col sm:flex-row items-start gap-2'>
+					<div className='text-sm bg-slate-800/60 px-3 py-1 rounded-sm text-gray-200 self-center'>
 						Topic:{' '}
 						<span className='font-semibold text-white ml-1'>{newsTopic}</span>
 					</div>
-
-					<div className='hidden sm:flex gap-2'>
-						<div className='text-xs text-left bg-slate-800/50 border border-slate-700 rounded-md px-3 py-2'>
-							<div className='font-medium'>{personaConfig.personaA.name}</div>
-							<div className='text-[0.78rem] text-gray-300 truncate max-w-[220px]'>
-								{personaConfig.personaA.style}
-							</div>
+					<div className='w-full sm:w-auto text-xs text-left bg-slate-800/50 border border-slate-700 rounded-md px-3 py-2'>
+						<div className='font-medium'>{personaConfig.personaA.name}</div>
+						<div className='text-[0.78rem] text-gray-300 truncate max-w-[220px]'>
+							{personaConfig.personaA.style}
 						</div>
-						<div className='text-xs text-left bg-slate-800/50 border border-slate-700 rounded-md px-3 py-2'>
-							<div className='font-medium'>{personaConfig.personaB.name}</div>
-							<div className='text-[0.78rem] text-gray-300 truncate max-w-[220px]'>
-								{personaConfig.personaB.style}
-							</div>
+					</div>
+					<div className='w-full sm:w-auto text-xs text-left bg-slate-800/50 border border-slate-700 rounded-md px-3 py-2'>
+						<div className='font-medium'>{personaConfig.personaB.name}</div>
+						<div className='text-[0.78rem] text-gray-300 truncate max-w-[220px]'>
+							{personaConfig.personaB.style}
 						</div>
 					</div>
 				</div>
