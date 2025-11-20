@@ -4,7 +4,7 @@ import {ttsLines} from './cartesia';
 import {PORT} from './config';
 import {generateDialogueLines} from './dialogue';
 import {applyPersonaDelta, interpretCommand} from './interpreter';
-import {fetchStories} from './news';
+import {fetchStoriesForTopic} from './news';
 import {appendShowNote, appendTranscriptLine, appendVttEntry} from './storage';
 import type {NewsStory} from './types';
 
@@ -29,7 +29,7 @@ function defaultPersonaConfig() {
 // interpret user command + maybe return new news stories
 app.post('/api/user-command', async (req, res) => {
 	try {
-		const {command, personaConfig, newsTopic} = req.body;
+		const {clientId, command, personaConfig, newsTopic} = req.body;
 		const current = personaConfig || defaultPersonaConfig();
 
 		const interpreted = await interpretCommand(command, current);
@@ -39,7 +39,11 @@ app.post('/api/user-command', async (req, res) => {
 		let updatedNewsTopic = newsTopic;
 		if (!command || interpreted.topicOnly || interpreted.toneAndTopic) {
 			updatedNewsTopic = interpreted.newsTopic || newsTopic;
-			stories = (await fetchStories(updatedNewsTopic, 6)) as NewsStory[];
+			stories = (await fetchStoriesForTopic(
+				clientId,
+				updatedNewsTopic,
+				6,
+			)) as NewsStory[];
 		}
 
 		console.log(
@@ -62,10 +66,10 @@ app.post('/api/user-command', async (req, res) => {
 // queue refill: get an additional news story
 app.post('/api/next-items', async (req, res) => {
 	try {
-		const {newsTopic} = req.body;
+		const {newsTopic, clientId} = req.body;
 		const topic = newsTopic || 'global';
 
-		const stories = await fetchStories(topic, 3);
+		const stories = await fetchStoriesForTopic(clientId, topic, 3);
 		if (!stories) {
 			return res.status(200).json({story: null});
 		}

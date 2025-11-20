@@ -4,26 +4,46 @@ import {NEWSAPI_KEY} from './config';
 import type {NewsStory} from './types';
 
 const newsAPI = new NewsAPI(NEWSAPI_KEY as string);
+const pageState = new Map<string, Map<string, number>>();
 
-export async function fetchStoriesForTopic(topic = 'global', count = 3) {
+function nextPage(clientId: string, topic: string) {
+	let topics = pageState.get(clientId);
+	if (!topics) {
+		topics = new Map();
+		pageState.set(clientId, topics);
+	}
+
+	const current = topics.get(topic) ?? 1;
+	topics.set(topic, current + 1);
+	return current;
+}
+
+export async function fetchStoriesForTopic(
+	clientId: string,
+	topic = 'global',
+	count = 3,
+) {
 	const isGeneric = topic === 'global';
+	const page = nextPage(clientId, topic);
 	const data = isGeneric
-		? await newsAPI.getTopHeadlines({pageSize: count})
+		? await newsAPI.getTopHeadlines({pageSize: count, page: page})
 		: await newsAPI.getEverything({
 				q: topic,
 				language: 'en',
 				pageSize: count,
 				sortBy: 'publishedAt',
+				page: page,
 			});
 
 	// deduplicate by url + soft title match
 	const seen = new Map();
 	const stories: NewsStory[] = [];
-
 	for (const a of data.articles) {
 		if (!a.url) continue;
-		const key = a.url;
-		if (seen.has(key)) continue;
+		const key = a.title;
+		if (seen.has(key)) {
+			continue;
+		}
 		seen.set(key, true);
 
 		const headline = a.title || 'Untitled';
@@ -56,11 +76,4 @@ export async function fetchStoriesForTopic(topic = 'global', count = 3) {
 	}
 
 	return stories;
-}
-
-export async function fetchStories(topic = 'global', count = 3) {
-	const stories = await fetchStoriesForTopic(topic, count);
-	if (!stories.length) return null;
-
-	return stories.slice(0, count);
 }

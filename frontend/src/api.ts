@@ -1,3 +1,4 @@
+import {getClientId} from './lib/utils';
 import type {
 	NewsStory,
 	PersonaConfig,
@@ -28,7 +29,12 @@ export async function apiUserCommand(
 		const res = await fetch(`${API_BASE}/api/user-command`, {
 			method: 'POST',
 			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({command, personaConfig, newsTopic}),
+			body: JSON.stringify({
+				clientId: getClientId(),
+				command,
+				personaConfig,
+				newsTopic,
+			}),
 		});
 		if (!res.ok) return null;
 		const data = (await res.json()) as UserCommandResponse;
@@ -46,7 +52,7 @@ export async function apiNextItems(
 		const res = await fetch(`${API_BASE}/api/next-items`, {
 			method: 'POST',
 			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({newsTopic}),
+			body: JSON.stringify({newsTopic, clientId: getClientId()}),
 		});
 		if (!res.ok) return null;
 		const data = (await res.json()) as NextItemResponse;
