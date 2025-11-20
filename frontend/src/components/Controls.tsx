@@ -26,10 +26,9 @@ const Controls: React.FC<ControlsProps> = ({
 	const [input, setInput] = useState('');
 
 	const handleStartClick = () => {
-		if (input.trim()) {
-			onCommand(input.trim());
-		}
+		onCommand(input.trim());
 		onStart();
+		setInput('');
 	};
 
 	const handleSubmit = (e: FormEvent) => {
@@ -43,32 +42,24 @@ const Controls: React.FC<ControlsProps> = ({
 	};
 
 	return (
-		<div style={{display: 'flex', gap: '0.5rem', marginBottom: '1rem'}}>
-			<button
+		<div className='flex gap-2 mb-4'>
+			<Button
+				className={
+					isPlaying
+						? 'bg-green-500/20 border border-gray-600 px-3 py-2 rounded-md hover:bg-green-500/40'
+						: 'bg-green-500/40 border border-gray-600 px-3 py-2 rounded-md hover:bg-green-500/20'
+				}
 				onClick={handleStartClick}
-				style={{
-					padding: '0.5rem 0.75rem',
-					borderRadius: 6,
-					border: '1px solid #4b5563',
-					background: isPlaying ? '#22c55e20' : '#22c55e40',
-					cursor: 'pointer',
-				}}
 				type='button'
+				variant='ghost'
 			>
 				{isPlaying ? 'Send' : 'Start'}
-			</button>
-			<form onSubmit={handleSubmit} style={{flex: 1}}>
+			</Button>
+			<form className='flex-1' onSubmit={handleSubmit}>
 				<input
+					className='w-full px-3 py-2 rounded-md border border-gray-600 bg-[#020617] text-gray-200'
 					onChange={e => setInput(e.target.value)}
 					placeholder='What are you curious about today?'
-					style={{
-						width: '100%',
-						padding: '0.5rem 0.75rem',
-						borderRadius: 6,
-						border: '1px solid #4b5563',
-						background: '#020617',
-						color: '#e5e7eb',
-					}}
 					value={input}
 				/>
 			</form>

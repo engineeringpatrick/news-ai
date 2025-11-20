@@ -12,27 +12,16 @@ const NowPlaying: React.FC<NowPlayingProps> = ({
 }) => {
 	if (isRenderingItem) {
 		return (
-			<div
-				style={{
-					padding: '1rem',
-					border: '1px solid #374151',
-					borderRadius: 8,
-					minHeight: 160,
-				}}
-			>
-				<h2 style={{marginTop: 0}}>Loading next news item...</h2>
-				<p style={{fontSize: '0.9rem', opacity: 0.7}}>
+			<div className='p-4 border border-gray-700 rounded-lg min-h-[160px]'>
+				<h2 className='mt-0'>Loading next news item...</h2>
+				<p className='text-[0.9rem] opacity-70'>
 					This may take a few seconds...
 				</p>
 				<img
 					alt='TV static gif...'
+					className='max-w-full rounded-lg mb-3'
 					height={120}
 					src='/tv-static.gif'
-					style={{
-						maxWidth: '100%',
-						borderRadius: 8,
-						marginBottom: '0.75rem',
-					}}
 					width={120}
 				/>
 			</div>
@@ -41,16 +30,9 @@ const NowPlaying: React.FC<NowPlayingProps> = ({
 
 	if (!nowPlaying?.story) {
 		return (
-			<div
-				style={{
-					padding: '1rem',
-					border: '1px solid #374151',
-					borderRadius: 8,
-					minHeight: 160,
-				}}
-			>
-				<h2 style={{marginTop: 0}}>Now Playing</h2>
-				<p style={{fontSize: '0.9rem', opacity: 0.7}}>
+			<div className='p-4 border border-gray-700 rounded-lg min-h-[160px]'>
+				<h2 className='mt-0'>Now Playing</h2>
+				<p className='text-[0.9rem] opacity-70'>
 					Nothing yet. Click Start to begin the newscast.
 				</p>
 			</div>
@@ -60,37 +42,21 @@ const NowPlaying: React.FC<NowPlayingProps> = ({
 	const {story} = nowPlaying;
 
 	return (
-		<div
-			style={{
-				padding: '1rem',
-				border: '1px solid #374151',
-				borderRadius: 8,
-			}}
-		>
-			<h2 style={{marginTop: 0}}>Now Playing</h2>
+		<div className='p-4 border border-gray-700 rounded-lg'>
+			<h2 className='mt-0'>Now Playing</h2>
 			<img
 				alt={story.headline}
-				height={120}
+				className='max-w-[50%] rounded-lg mb-3'
+				height={150}
 				src={story.image ? story.image : '/placeholder.webp'}
-				style={{
-					maxWidth: '50%',
-					borderRadius: 8,
-					marginBottom: '0.75rem',
-				}}
-				width={120}
+				width={150}
 			/>
-			<h3 style={{margin: '0 0 0.25rem 0'}}>{story.headline}</h3>
-			<p style={{fontSize: '0.8rem', opacity: 0.75, margin: 0}}>
-				{story.publisher || ''}
-			</p>
+			<h3 className='mb-1'>{story.headline}</h3>
+			<p className='text-[0.8rem] opacity-75 m-0'>{story.publisher || ''}</p>
 			<a
+				className='text-[0.8rem] mt-1 inline-block'
 				href={story.url}
 				rel='noreferrer'
-				style={{
-					fontSize: '0.8rem',
-					marginTop: '0.25rem',
-					display: 'inline-block',
-				}}
 				target='_blank'
 			>
 				[Source]

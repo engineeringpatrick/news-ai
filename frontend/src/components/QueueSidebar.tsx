@@ -7,66 +7,47 @@ interface QueueSidebarProps {
 
 const QueueSidebar: React.FC<QueueSidebarProps> = ({queue}) => {
 	return (
-		<div
-			style={{
-				padding: '1rem',
-				border: '1px solid #374151',
-				borderRadius: 8,
-				height: '100%',
-				maxHeight: '480px',
-				overflowY: 'auto',
-			}}
-		>
-			<h2 style={{marginTop: 0}}>Up Next</h2>
+		<div className='p-4 border bg-slate-900/40 rounded-lg h-full max-h-[480px] overflow-y-auto'>
+			<h2 className='mt-0'>Up Next</h2>
 			{queue.length === 0 && (
-				<p style={{fontSize: '0.9rem', opacity: 0.7}}>
-					Queue is currently empty.
-				</p>
+				<p className='text-[0.9rem] opacity-70'>Queue is currently empty.</p>
 			)}
-			{queue.map((story, index) => (
-				<div
-					key={story.id}
-					style={{
-						marginTop: '0.75rem',
-						paddingTop: index === 0 ? 0 : '0.75rem',
-						borderTop: index === 0 ? 'none' : '1px solid #1f2933',
-					}}
-				>
-					<div style={{fontSize: '0.7rem', opacity: 0.7}}>#{index + 1}</div>
-					<div style={{display: 'flex', gap: '0.5rem'}}>
-						{story.image && (
-							<img
-								alt={story.headline}
-								height={64}
-								src={story.image}
-								style={{
-									objectFit: 'cover',
-									borderRadius: 4,
-								}}
-								width={64}
-							/>
-						)}
-						<div>
-							<div style={{fontSize: '0.9rem'}}>{story.headline}</div>
-							<div style={{fontSize: '0.75rem', opacity: 0.7}}>
-								{story.publisher}
+
+			{queue.map((story, index) => {
+				const itemBase = 'mt-3';
+				const itemExtra =
+					index === 0 ? 'pt-0 border-t-0' : 'pt-3 border-t border-t-gray-800';
+				return (
+					<div className={`${itemBase} ${itemExtra}`} key={story.id}>
+						<div className='text-[0.7rem] opacity-70'>#{index + 1}</div>
+						<div className='flex gap-2'>
+							{story.image && (
+								<img
+									alt={story.headline}
+									className='object-cover rounded-sm'
+									height={64}
+									src={story.image}
+									width={64}
+								/>
+							)}
+							<div>
+								<div className='text-[0.9rem]'>{story.headline}</div>
+								<div className='text-[0.75rem] opacity-70'>
+									{story.publisher}
+								</div>
+								<a
+									className='text-[0.75rem] inline-block mt-0.5'
+									href={story.url}
+									rel='noreferrer'
+									target='_blank'
+								>
+									[src]
+								</a>
 							</div>
-							<a
-								href={story.url}
-								rel='noreferrer'
-								style={{
-									fontSize: '0.75rem',
-									display: 'inline-block',
-									marginTop: '0.1rem',
-								}}
-								target='_blank'
-							>
-								[src]
-							</a>
 						</div>
 					</div>
-				</div>
-			))}
+				);
+			})}
 		</div>
 	);
 };

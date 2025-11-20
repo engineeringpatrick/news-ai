@@ -76,58 +76,90 @@ const App: React.FC = () => {
 	};
 
 	return (
-		<div
-			style={{
-				padding: '1.5rem',
-				maxWidth: 1200,
-				margin: '0 auto',
-			}}
-		>
-			<h1 style={{marginTop: 0, marginBottom: '0.25rem'}}>
-				Welcome to News.AI
-			</h1>
-			<p style={{fontSize: '0.9rem', opacity: 0.75, marginTop: 0}}>
-				Click <strong>Start</strong> once, then type requests like “show me
-				soccer news”, “less snark”, or “more numbers”.
-			</p>
-
-			<Controls
-				isPlaying={isPlaying}
-				onCommand={handleCommand}
-				onStart={start}
-				pause={stop}
-				resume={start}
-				skipLine={skipLine}
-				skipStory={skipStory}
-			/>
-			<VolumeSlider setVolume={setVolume} volume={volume} />
-			<div
-				style={{
-					display: 'grid',
-					gridTemplateColumns: '2fr 1fr',
-					gap: '1rem',
-					marginTop: '1rem',
-				}}
-			>
+		<div className='mx-auto max-w-5xl p-6'>
+			<header className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6'>
 				<div>
-					<NowPlaying
-						isRenderingItem={isPlaying && !nowPlaying}
-						nowPlaying={nowPlaying}
-					/>
-					<Transcript lines={transcript} />
+					<h1 className='text-2xl font-semibold leading-tight'>News.AI</h1>
+					<p className='text-sm text-gray-400 mt-1'>
+						One-click conversational & customizable newscast
+					</p>
 				</div>
-				<QueueSidebar queue={queue} />
-			</div>
-			<footer
-				style={{
-					marginTop: '4rem',
-					textAlign: 'center',
-					fontSize: '0.8rem',
-					color: '#555',
-				}}
-			>
+
+				<div className='flex items-center gap-3'>
+					<div className='text-sm bg-slate-800/60 px-3 py-1 rounded-sm text-gray-200'>
+						Topic:{' '}
+						<span className='font-semibold text-white ml-1'>{newsTopic}</span>
+					</div>
+
+					<div className='hidden sm:flex gap-2'>
+						<div className='text-xs text-left bg-slate-800/50 border border-slate-700 rounded-md px-3 py-2'>
+							<div className='font-medium'>{personaConfig.personaA.name}</div>
+							<div className='text-[0.78rem] text-gray-300 truncate max-w-[220px]'>
+								{personaConfig.personaA.style}
+							</div>
+						</div>
+						<div className='text-xs text-left bg-slate-800/50 border border-slate-700 rounded-md px-3 py-2'>
+							<div className='font-medium'>{personaConfig.personaB.name}</div>
+							<div className='text-[0.78rem] text-gray-300 truncate max-w-[220px]'>
+								{personaConfig.personaB.style}
+							</div>
+						</div>
+					</div>
+				</div>
+			</header>
+
+			<section className='mb-4'>
+				<Controls
+					isPlaying={isPlaying}
+					onCommand={handleCommand}
+					onStart={start}
+					pause={stop}
+					resume={start}
+					skipLine={skipLine}
+					skipStory={skipStory}
+				/>
+				<div className='mt-3'>
+					<VolumeSlider setVolume={setVolume} volume={volume} />
+				</div>
+			</section>
+
+			<main className='grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6'>
+				{/* left column */}
+				<div className='space-y-4'>
+					<div className='bg-slate-900/40 border border-slate-800 rounded-lg p-4'>
+						<NowPlaying
+							isRenderingItem={isPlaying && !nowPlaying}
+							nowPlaying={nowPlaying}
+						/>
+					</div>
+
+					<div className='bg-slate-900/40 border border-slate-800 rounded-lg p-4'>
+						<h2 className='text-base font-medium mb-2'>Transcript</h2>
+						<Transcript lines={transcript} />
+					</div>
+				</div>
+
+				{/* right column */}
+				<div className='space-y-4'>
+					<QueueSidebar queue={queue} />
+
+					<div className='bg-transparent text-sm text-gray-400 p-3 rounded-md'>
+						<p className='mb-1'>Quick tips</p>
+						<ul className='list-disc list-inside text-[0.9rem] text-gray-400'>
+							<li>Type topics like "soccer", "economy", or "climate".</li>
+							<li>Control tone with "more numbers" or "less snark".</li>
+							<li>Use Skip Line / Skip Story to move through the newscast.</li>
+						</ul>
+					</div>
+				</div>
+			</main>
+
+			<footer className='mt-12 text-center text-sm text-gray-500'>
 				<p>
-					Made with ♥ by <a href='https://patrickdeniso.com/'>Patrick</a>
+					Made with ♥ by{' '}
+					<a className='text-blue-400' href='https://patrickdeniso.com/'>
+						Patrick
+					</a>
 				</p>
 			</footer>
 		</div>

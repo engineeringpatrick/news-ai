@@ -37,11 +37,17 @@ app.post('/api/user-command', async (req, res) => {
 
 		let stories: NewsStory[] = [];
 		let updatedNewsTopic = newsTopic;
-		if (interpreted.topicOnly || interpreted.toneAndTopic) {
+		if (!command || interpreted.topicOnly || interpreted.toneAndTopic) {
 			updatedNewsTopic = interpreted.newsTopic || newsTopic;
 			stories = (await fetchStories(updatedNewsTopic, 6)) as NewsStory[];
 		}
 
+		console.log(
+			'interpreted command:',
+			interpreted,
+			' returning stories:',
+			stories.length,
+		);
 		res.json({
 			personaConfig: updatedPersona,
 			newsTopic: updatedNewsTopic,
