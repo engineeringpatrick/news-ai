@@ -13,14 +13,14 @@ import type {
 } from "../types";
 
 interface UseAudioSchedulerParams {
-  // Queue A: raw stories (owned by parent)
+  // queue a: raw stories (owned by parent)
   queue: NewsStory[];
   setQueue: React.Dispatch<React.SetStateAction<NewsStory[]>>;
 
-  // Transcript display in UI
+  // transcript display in UI
   setTranscript: React.Dispatch<React.SetStateAction<TranscriptLine[]>>;
 
-  // Global play/pause
+  // global play/pause
   isPlaying: boolean;
   setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -52,7 +52,7 @@ export function base64ToAudioUrl(base64: string, mime: string) {
   return URL.createObjectURL(blob);
 }
 
-// Internal: rendered item tagged with persona version at render time
+// internal: rendered item tagged with persona version at render time
 type RenderedItemWithPersona = RenderedItem & { personaVersion: number };
 
 export function useAudioScheduler({
@@ -65,22 +65,22 @@ export function useAudioScheduler({
   newsTopic,
   volume
 }: UseAudioSchedulerParams): UseAudioSchedulerReturn {
-  // Queue B: rendered stories (with audio)
+  // queue B: rendered stories (with audio)
   const [renderedQueue, setRenderedQueue] = useState<RenderedItemWithPersona[]>([]);
   const [nowPlaying, setNowPlaying] = useState<RenderedItemWithPersona | null>(null);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [storyToRenderIdx, setStoryToRenderIdx] = useState<number>(0);
 
-  // Single audio element
+  // single audio element
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Persona version increments on config change
+  // persona version increments on config change
   const personaVersionRef = useRef(0);
 
-  // Current story being played (for re-queue on persona switch)
+  // current story being played (for re-queue on persona switch)
   const currentStoryRef = useRef<NewsStory | null>(null);
 
-  // Flags for async work
+  // flags for async work
   const isFetchingStoriesRef = useRef(false);
   const isRenderingRef = useRef(false);
 
@@ -93,7 +93,7 @@ export function useAudioScheduler({
   }
   const audio = audioRef.current;
 
-  // 1) Auto-refill raw story queue (Queue A) when low
+  // 1) auto-refill raw story queue (queue A) when low
   useEffect(() => {
     if (!isPlaying) return;
 
@@ -115,22 +115,20 @@ export function useAudioScheduler({
     })();
   }, [queue.length, renderedQueue.length, newsTopic]);
 
-  // 2) Persona change:
+  // 2) persona change:
   //    - bump persona version
   //    - flush renderedQueue
   //    - keep queue A
-  //    - do NOT kill current line; we handle switch after the line finishes
+  //    - dont kill current line; we handle switch after the line finishes
   useEffect(() => {
-    console.log("personaConfig changed, bumping persona version and flushing renderedQueue");
     personaVersionRef.current += 1;
     setRenderedQueue([]);
     setStoryToRenderIdx(0);
     isRenderingRef.current = false;
   }, [personaConfig]);
 
-  // 3) Pre-render next stories from Queue A into Queue B while playing
+  // 3) pre-render next stories from queue A into queue B while playing
   useEffect(() => {
-    console.log("checking to render next story", { queueLength: queue.length, renderedQueueLength: renderedQueue.length, isRenderingRef: isRenderingRef.current });
     if (!isPlaying) return;
     if (!queue.length) return;
     if (isRenderingRef.current) return;
@@ -145,13 +143,13 @@ export function useAudioScheduler({
     const storyToRender = queue[storyToRenderIdx];
     (async () => {
       try {
-        if (!storyToRender) { console.log("story to render is null"); return;  }
+        if (!storyToRender) { return;  }
 
         const rendered = await apiRenderItem(queue[storyToRenderIdx] as NewsStory, personaConfig);
         if (!rendered) { return; }
 
-        // If persona changed during render, drop this result
-        if (personaVersionRef.current !== personaVersionAtRenderStart) { console.log("returning because persona changed"); return; }
+        // if persona changed during render, drop this result
+        if (personaVersionRef.current !== personaVersionAtRenderStart) { return; }
 
         const tagged: RenderedItemWithPersona = {
           ...rendered,
@@ -170,16 +168,15 @@ export function useAudioScheduler({
     return () => {};
   }, [queue.length, renderedQueue.length, isRenderingRef]);
 
-  // 4) When playing and there is no nowPlaying but we have rendered items, start next story
+  // 4) when playing and there is no nowPlaying but we have rendered items, start next story
   useEffect(() => {
     if (!isPlaying) return;
-    console.log("do I play next story?", { isPlaying, nowPlaying, renderedQueueLength: renderedQueue.length });
     if (nowPlaying) return;
     if (!renderedQueue.length) return;
 
     const [next, ...rest] = renderedQueue;
 
-    // Remove corresponding story from Queue A prefix
+    // remove corresponding story from Queue A prefix
     setQueue((q) => q.slice(1));
     setRenderedQueue(rest);
     setStoryToRenderIdx((idx) => idx - 1);
@@ -188,7 +185,7 @@ export function useAudioScheduler({
     currentStoryRef.current = next!.story as NewsStory;
   }, [isPlaying, nowPlaying, renderedQueue]);
 
-  // 5) Play current line of nowPlaying
+  // 5) play current line of nowPlaying
   useEffect(() => {
     if (!isPlaying) return;
     if (!audio) return;
@@ -198,7 +195,7 @@ export function useAudioScheduler({
     const line = lines[currentLineIndex];
 
     if (!line) {
-      // No more lines in this story
+      // no more lines in this story
       currentStoryRef.current = null;
       setNowPlaying(null);
       setCurrentLineIndex(0);
@@ -206,7 +203,7 @@ export function useAudioScheduler({
       return;
     }
 
-    // Update transcript with this line
+    // update transcript with this line
     setTranscript([line as TranscriptLine]);
 
     const src = line.audioBase64
@@ -219,7 +216,7 @@ export function useAudioScheduler({
       if (ended) return;
       ended = true;
 
-      // Rough timing estimate for append
+      // rough timing estimate for append
       const durationMs = audio.duration ? audio.duration * 1000 : 2000;
       const endMs = performance.now();
       const startMs = endMs - durationMs;
@@ -237,13 +234,11 @@ export function useAudioScheduler({
       const personaVersionAtRender = nowPlaying.personaVersion;
       const personaChanged = personaVersionAtRender !== personaVersionRef.current;
 
-      // If persona changed mid-story: finish this line, then
+      // if persona changed mid-story: finish this line, then
       // - drop current rendered story
       // - requeue its raw story at front
       // - clear nowPlaying so a new version with new persona is rendered
-      console.log("did persona change?", personaVersionAtRender, personaVersionRef.current);
       if (personaChanged) {
-        console.log("persona changed mid-story, re-queuing story for re-render!!!!!!");
         const currentStory = currentStoryRef.current;
         if (currentStory) {
           setQueue((q) => [currentStory, ...q]);
@@ -254,7 +249,7 @@ export function useAudioScheduler({
         return;
       }
 
-      // Normal case: move to next line or finish story
+      // normal case: move to next line or finish story
       const linesNow = (nowPlaying.lines as DialogueLine[]) ?? [];
       if (currentLineIndex + 1 < linesNow.length) {
         setCurrentLineIndex((i) => i + 1);
@@ -267,7 +262,7 @@ export function useAudioScheduler({
     };
 
     if (!src) {
-      // No audio available, simulate duration
+      // no audio available, simulate duration
       const timeoutId = window.setTimeout(() => {
         void handleFinished();
       }, 2000);
@@ -288,7 +283,7 @@ export function useAudioScheduler({
       if (ended) return;
       ended = true;
 
-      // Skip this line on error
+      // skip this line on error
       const linesNow = (nowPlaying.lines as DialogueLine[]) ?? [];
       if (currentLineIndex + 1 < linesNow.length) {
         setCurrentLineIndex((i) => i + 1);
@@ -308,7 +303,7 @@ export function useAudioScheduler({
       }
     })();
 
-    // Cleanup for this line
+    // cleanup for this line
     return () => {
       audio.onended = null;
       audio.onerror = null;
@@ -324,7 +319,7 @@ export function useAudioScheduler({
     audioRef.current!.volume = volume;
   }, [volume]);
 
-  // 6) Pause audio when stopped
+  // 6) pause audio when stopped
   useEffect(() => {
     if (!audio) return;
     if (!isPlaying) {
@@ -332,17 +327,13 @@ export function useAudioScheduler({
     }
   }, [isPlaying, audio]);
 
-  // 7) Static sound while rendering (unchanged behavior)
+  // 7) static sound while rendering (unchanged behavior)
   useEffect(() => {
     if (nowPlaying || !isPlaying) return;
     const staticAudio = new Audio("/tv-static.mp3");
 
     staticAudio.loop = true;
     staticAudio.volume = volume * 0.5;
-
-    staticAudio.play().catch(() => {
-      console.log("autoplay blocked for static audio");
-    });
 
     return () => {
       staticAudio.pause();

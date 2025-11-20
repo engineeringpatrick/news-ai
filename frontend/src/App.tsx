@@ -43,7 +43,6 @@ const App: React.FC = () => {
     const data = await apiUserCommand(command, personaConfig, newsTopic);
     if (!data) return;
 
-    console.log("api/user-command response", data);
     const { personaConfig: updatedPersona, newsTopic: newsTopicData, newStories } = data;
 
     setPersonaConfig((prev) => ({
