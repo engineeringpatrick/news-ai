@@ -7,11 +7,11 @@ import {Slider} from '@/components/ui/slider';
 export const title = 'Volume Control';
 
 interface VolumeSliderParams {
+	setVolume: (vol: number) => void;
 	volume: number;
-	setVolume: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const VolumeSlider = ({volume, setVolume}: VolumeSliderParams) => {
+const VolumeSlider = ({setVolume, volume}: VolumeSliderParams) => {
 	return (
 		<div className='flex w-full max-w-md flex-col gap-2'>
 			<div className='flex items-center justify-between'>

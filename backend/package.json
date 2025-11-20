@@ -14,13 +14,15 @@
 	"dependencies": {
 		"@cartesia/cartesia-js": "^2.2.9",
 		"express": "^5.1.0",
-		"ts-newsapi": "^1.0.2"
+		"ts-newsapi": "^1.0.2",
+		"ws": "^8.18.3"
 	},
 	"devDependencies": {
 		"@types/cors": "^2.8.19",
 		"@types/express": "^5.0.5",
 		"@types/node": "^24.10.1",
 		"@types/uuid": "^10.0.0",
+		"@types/ws": "^8.18.1",
 		"cors": "^2.8.5",
 		"dotenv": "^16.4.5",
 		"node-fetch": "^3.3.2",

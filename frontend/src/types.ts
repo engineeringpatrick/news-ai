@@ -32,5 +32,11 @@ export interface RenderedItem {
 	story: NewsStory;
 	lines: DialogueLine[];
 }
+export type ResultStream = {
+	audio: string;
+	text: string;
+	speaker: string;
+	done: boolean;
+};
 
 export type TranscriptLine = Omit<DialogueLine, 'audioBase64' | 'mime'>;

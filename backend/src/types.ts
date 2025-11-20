@@ -27,10 +27,15 @@ interface PersonaDelta {
 	personaA: {style: string | null} | null;
 	personaB: {style: string | null} | null;
 }
-
+interface ResultStream {
+	audio: string;
+	text: string;
+	speaker: string;
+}
 type TranscriptLine = Omit<DialogueLine, 'audioBase64' | 'mime'>;
 
 export type {
+	ResultStream,
 	DialogueLine,
 	NewsStory,
 	PersonaConfig,

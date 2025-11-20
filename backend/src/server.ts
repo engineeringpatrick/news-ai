@@ -1,3 +1,4 @@
+import http from 'node:http';
 import cors from 'cors';
 import express from 'express';
 import {ttsLines} from './cartesia';
@@ -6,11 +7,14 @@ import {generateDialogueLines} from './dialogue';
 import {applyPersonaDelta, interpretCommand} from './interpreter';
 import {fetchStoriesForTopic} from './news';
 import {appendShowNote, appendTranscriptLine, appendVttEntry} from './storage';
+import {attachTTSStreamingWSS} from './ttsStream';
 import type {NewsStory} from './types';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+const server = http.createServer(app);
+attachTTSStreamingWSS(server);
 
 // default persona config if frontend doesn't provide one yet
 function defaultPersonaConfig() {
@@ -117,6 +121,6 @@ app.post('/api/transcript-append', (req, res) => {
 	}
 });
 
-app.listen(PORT, () => {
-	console.log(`Backend listening on http://localhost:${PORT}`);
+server.listen(PORT, () => {
+	console.log('HTTP + WS server running on 4000');
 });

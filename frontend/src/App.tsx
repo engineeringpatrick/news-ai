@@ -1,14 +1,10 @@
 import type React from 'react';
 import {useState} from 'react';
 import {apiUserCommand} from './api';
-import Controls from './components/Controls';
-import NowPlaying from './components/NowPlaying';
+import {AudioPlayer} from './components/AudioPlayer';
 import QueueSidebar from './components/QueueSidebar';
-import Transcript from './components/Transcript';
-import VolumeSlider from './components/VolumeControl';
-import {useAudioScheduler} from './hooks/useAudioScheduler';
 import {usePersistedState} from './hooks/usePersistedState';
-import type {NewsStory, PersonaConfig, TranscriptLine} from './types';
+import type {NewsStory, PersonaConfig} from './types';
 
 const defaultPersona: PersonaConfig = {
 	personaA: {
@@ -31,20 +27,6 @@ const App: React.FC = () => {
 		'global',
 	);
 	const [queue, setQueue] = useState<NewsStory[]>([]);
-	const [transcript, setTranscript] = useState<TranscriptLine[]>([]);
-	const [isPlaying, setIsPlaying] = useState(false);
-	const [volume, setVolume] = useState(0.5);
-
-	const {nowPlaying, start, stop, skipLine, skipStory} = useAudioScheduler({
-		queue,
-		setQueue,
-		setTranscript,
-		isPlaying,
-		setIsPlaying,
-		personaConfig,
-		newsTopic,
-		volume,
-	});
 
 	const handleCommand = async (command: string) => {
 		const data = await apiUserCommand(command, personaConfig, newsTopic);
@@ -62,16 +44,8 @@ const App: React.FC = () => {
 		}));
 		setNewsTopic(newsTopicData);
 
-		if (newStories && newStories.length > 0) {
-			setQueue(prevQueue => {
-				if (prevQueue.length === 0) {
-					return [...newStories];
-				}
-				const [current, ...rest] = prevQueue;
-				return current
-					? [current, ...newStories, ...rest]
-					: [...newStories, ...rest];
-			});
+		if (newStories) {
+			setQueue(q => [...q, ...newStories]);
 		}
 	};
 
@@ -104,24 +78,18 @@ const App: React.FC = () => {
 					</div>
 				</div>
 			</header>
-			<section className='mb-4'>
-				<Controls
-					isPlaying={isPlaying}
-					onCommand={handleCommand}
-					onStart={start}
-					pause={stop}
-					resume={start}
-					skipLine={skipLine}
-					skipStory={skipStory}
-				/>
-				<div className='mt-3'>
-					<VolumeSlider setVolume={setVolume} volume={volume} />
-				</div>
-			</section>
+
 			<main className='flex-1 grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6'>
 				{/* left column */}
 				<div className='space-y-4'>
-					<div className='bg-slate-900/40 border border-slate-800 rounded-lg p-4'>
+					<AudioPlayer
+						handleCommand={handleCommand}
+						personaConfig={personaConfig}
+						setStories={setQueue}
+						stories={queue}
+					/>
+
+					{/* <div className='bg-slate-900/40 border border-slate-800 rounded-lg p-4'>
 						<NowPlaying
 							isRenderingItem={isPlaying && !nowPlaying}
 							nowPlaying={nowPlaying}
@@ -131,7 +99,7 @@ const App: React.FC = () => {
 					<div className='bg-slate-900/40 border border-slate-800 rounded-lg p-4'>
 						<h2 className='text-base font-medium mb-2'>Transcript</h2>
 						<Transcript lines={transcript} />
-					</div>
+					</div> */}
 				</div>
 
 				{/* right column */}
