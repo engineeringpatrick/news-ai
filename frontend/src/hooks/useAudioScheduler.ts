@@ -231,25 +231,6 @@ export function useAudioScheduler({
         endMs
       );
 
-      const personaVersionAtRender = nowPlaying.personaVersion;
-      const personaChanged = personaVersionAtRender !== personaVersionRef.current;
-
-      // if persona changed mid-story: finish this line, then
-      // - drop current rendered story
-      // - requeue its raw story at front
-      // - clear nowPlaying so a new version with new persona is rendered
-      if (personaChanged) {
-        const currentStory = currentStoryRef.current;
-        if (currentStory) {
-          setQueue((q) => [currentStory, ...q]);
-        }
-        setNowPlaying(null);
-        setCurrentLineIndex(0);
-        setTranscript([]);
-        return;
-      }
-
-      // normal case: move to next line or finish story
       const linesNow = (nowPlaying.lines as DialogueLine[]) ?? [];
       if (currentLineIndex + 1 < linesNow.length) {
         setCurrentLineIndex((i) => i + 1);
@@ -312,7 +293,6 @@ export function useAudioScheduler({
     isPlaying,
     nowPlaying,
     currentLineIndex,
-    personaVersionRef,
   ]);
 
   useEffect(() => {

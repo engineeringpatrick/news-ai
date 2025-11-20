@@ -28,6 +28,9 @@ const Controls: React.FC<ControlsProps> = ({ onStart, onCommand, isPlaying, paus
     if (!input.trim()) return;
     onCommand(input.trim());
     setInput("");
+    if (!isPlaying) {
+      onStart();
+    }
   };
 
   return (
@@ -43,7 +46,7 @@ const Controls: React.FC<ControlsProps> = ({ onStart, onCommand, isPlaying, paus
           cursor: "pointer"
         }}
       >
-        {isPlaying ? "Send update" : "Start"}
+        {isPlaying ? "Send" : "Start"}
       </button>
       <form onSubmit={handleSubmit} style={{ flex: 1 }}>
         <input
