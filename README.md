@@ -2,8 +2,9 @@
 
 This is a simple two-host broadcast powered by AI. 
 
-<img width="1494" height="734" alt="image" src="https://github.com/user-attachments/assets/8bc271b1-314a-4e4f-bee5-bcff8e905c6f" />
-<img width="1486" height="815" alt="image" src="https://github.com/user-attachments/assets/ff7a2f0b-c1c1-4a9a-bdb3-4afdd3cddd5c" />
+<img width="1578" height="747" alt="image" src="https://github.com/user-attachments/assets/15133fe1-907f-405d-8489-18cebef2f51b" />
+<img width="1541" height="1080" alt="image" src="https://github.com/user-attachments/assets/5e3f21ed-e607-41d4-9f40-7937a4cd8d35" />
+
 
 
 ## How to use?
@@ -29,4 +30,5 @@ npm --prefix frontend run dev
 - node.js + express
 
 ## Architecture
+
 
