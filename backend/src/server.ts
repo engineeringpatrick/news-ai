@@ -70,7 +70,7 @@ app.post('/api/next-items', async (req, res) => {
 			return res.status(200).json({story: null});
 		}
 
-		res.json({snewStories: stories});
+		res.json({newStories: stories});
 	} catch (e) {
 		console.error('/api/next-items error', e);
 		res.status(500).json({error: 'internal_error'});
