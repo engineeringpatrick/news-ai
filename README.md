@@ -1,6 +1,6 @@
 # News.AI
 
-This is a two-host broadcast powered by AI, entirely customizable depending on the user's needs (e.g. you can make the newsanchor fight if you want!)
+This is a two-host news broadcast powered by AI, entirely customizable depending on the user's needs (e.g. you can make the newscasters fight if you want!)
 
 <img width="1339" height="1272" alt="image" src="https://github.com/user-attachments/assets/a38c27e4-3d1e-483f-ae74-5fcdf518ccd6" />
 
@@ -33,6 +33,7 @@ npm --prefix frontend run dev
 - NLP processing, news fetching, dialogue generation and TTS generation is all done by the backend.
 - Client keeps two queues of news stories. One containing raw facts (queue A), one containing dialogue lines and audio (queue B).
 - If the user wants to change the tone, only queue B has to be re-computed. If the user wants to change news topic, or both, queue A will have to be cleared and recomputed.
+
 
 
 
