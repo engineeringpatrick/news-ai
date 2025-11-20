@@ -1,5 +1,4 @@
 {
-	"include": ["src", "vite-env.d.ts"],
 	"files": [],
 	"references": [
 		{
